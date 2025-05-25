@@ -4,7 +4,7 @@
  */
 public class Task {
 
-    // Unique identifier for the task (1–9)
+    // Unique identifier for the task (1-9)
     private int taskId;
 
     // Description of the task
@@ -29,7 +29,7 @@ public class Task {
 
     /**
      * Sets the task ID.
-     * @param taskId int (must be between 1–9)
+     * @param taskId int (must be between 1-9)
      */
     public void setTaskId(int taskId) {
         this.taskId = taskId;

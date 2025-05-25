@@ -1,15 +1,29 @@
-# SENG1110 – Assignment 2 Refactor Plan & Progress
+
+For Assignment 2, I've created a new repo and I'm keeping the `Project` and `Task` classes from Assignment 1, since they still do the job with just a few tweaks. But I've decided to completely rebuild `UserInterface.java` from scratch. Refactoring the old one would've taken more time than just writing it again in a cleaner, more structured way - using arrays, helper methods, and the new stuff we've covered since the break like file I/O and exception handling.
+
+## UserInterface Rebuild
+
+The `UserInterface` class in Assignment 1 got the job done, but it ended up pretty bulky and hard to manage, with most of the logic crammed into one place. For Assignment 2, I've decided to start fresh so I can build things more cleanly - using arrays, helper methods, and better separation of responsibilities across classes.
+
+Progress below is tracked by menu option:
+
+- [ ] `1. Create a new project` - Prompt for project details, store in first available slot
+- [ ] `2. Remove a project` - Find by ID, confirm, null the slot
+- [ ] `3. Add a task to a project` - Prompt for task details, validate and add via `addTask()`
+- [ ] `4. Mark a task as completed` - Find task by ID and update completed status
+- [ ] `5. Remove a task from a project` - Locate and null out the matching task slot
+- [ ] `6. Display all project details` - Loop through projects, print info + all tasks
+- [ ] `7. Display completed tasks` - Filter and show only completed tasks across all projects
+- [ ] `8. Filter tasks by type` - Prompt for A/L/S, display matching tasks only
+- [ ] `9. Display project summary` - Show ID, name, type, task count, total duration, etc.
+- [ ] `10. Load from file` - Parse ProjectData.txt into structured objects
+- [ ] `11. Save to file` - Write all data in assignment format to ProjectData.txt
+- [ ] `-1. Exit` - Terminate program cleanly with goodbye message
 
 ## Core Structure
 - [ ] Created fresh repo and folder structure
 - [ ] All `.java` files inside `src/`
 - [ ] `.gitignore` blocks `.class` files and build artifacts
-
-## Clean-up from Assignment 1
-- [ ] Moved all task-related logic out of `UserInterface` into `Project`
-- [ ] Removed hardcoded seed data; now loaded from file
-- [ ] Replaced copy-pasted logic with reusable helper methods
-- [ ] Improved clarity and structure of menu system
 
 ## Project & Task Management
 - [ ] `Project[]` stores up to 10 projects
