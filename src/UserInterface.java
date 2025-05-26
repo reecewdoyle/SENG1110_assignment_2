@@ -118,18 +118,86 @@ public class UserInterface {
  * Validates input and assigns the project to the next available project slot.
  * Allows a maximum of three projects in the system at any time.
  */
-    private void createProject() {
-        if (project1 == null || project2 == null || project3 == null) {
+private void createProject() {
+    // Check if there's room for a new project
+    if (project1 == null || project2 == null || project3 == null) {
         Project p = new Project();
-        // Collect projectId, name, type from user
-        // Normalise projectType (e.g., "basic" -> "Basic")
+
+        // ----------------- Project ID Input -----------------
+        int id = 0;
+        boolean validProjectId = false;
+
+        do {
+            System.out.print("\nEnter Project ID (1-999): ");
+            if (scannerInput.hasNextInt()) {
+                id = scannerInput.nextInt();
+                scannerInput.nextLine(); // Consume leftover newline
+
+                if (id > 0 && id <= 999) {
+                    // Check ID is not a duplicate
+                    if ((project1 != null && project1.getProjectId() == id) ||
+                        (project2 != null && project2.getProjectId() == id) ||
+                        (project3 != null && project3.getProjectId() == id)) {
+                        System.out.println("Project ID already exists.");
+                    } else {
+                        validProjectId = true;
+                    }
+                } else {
+                    System.out.println("Project ID must be a positive whole number (1-999).");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a positive whole number (1-999).");
+                scannerInput.next(); // Clear invalid token
+            }
+        } while (!validProjectId);
+
+        p.setProjectId(id);
+        System.out.println("\nProject ID " + p.getProjectId());
+
+        // ----------------- Project Name Input -----------------
+        System.out.print("\nEnter Project Name: ");
+        String projectName = scannerInput.nextLine().trim();
+        while (projectName.isEmpty()) {
+            System.out.println("Project name cannot be empty. Please enter a valid name:");
+            projectName = scannerInput.nextLine().trim();
+        }
+        p.setProjectName(projectName);
+        System.out.println("Project Name " + p.getProjectName());
+
+        // ----------------- Project Type Input -----------------
+        System.out.print("\nEnter Project Type (Small, Medium or Large): ");
+        String projectType = scannerInput.nextLine().trim();
+
+        // Ensure project type input is not empty before normalising and validating
+        while (projectType.isEmpty()) {
+            System.out.println("Project type cannot be empty. Please enter Small, Medium, or Large:");
+            projectType = scannerInput.nextLine().trim();
+        } 
+
+        // Normalise case
+        projectType = projectType.toLowerCase();
+        projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
+
+        // Validate type
+        while (!projectType.equals("Small") && !projectType.equals("Medium") && !projectType.equals("Large")) {
+            System.out.println("Invalid project type. Please enter Small, Medium, or Large:");
+            projectType = scannerInput.nextLine().trim();
+            projectType = projectType.toLowerCase();
+            projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
+        }
+
+        p.setProjectType(projectType);
+        System.out.println("Project Type " + p.getProjectType());
+
+        // ----------------- Assign Project -----------------
         if (project1 == null) project1 = p;
         else if (project2 == null) project2 = p;
         else if (project3 == null) project3 = p;
-        } else {
-        System.out.println("Maximum projects reached!");
-        }
+        System.out.println("\nProject successfully created! Cannot create more than three.");
+    } else {
+        System.out.println("\nMaximum projects reached!");
     }
+}
 
 // -------------------------------------------------------------------------
 // REMOVE PROJECT
