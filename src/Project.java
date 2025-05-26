@@ -14,9 +14,7 @@ public class Project {
     private String projectType;
     
     // Up to 3 tasks associated with this project
-    private Task task1;
-    private Task task2;
-    private Task task3;
+    private Task[] tasks;  
     
     /**
      * Gets the project ID.
@@ -64,53 +62,29 @@ public class Project {
      */
     public void setProjectType(String projectType) {
         this.projectType = projectType;
+        setTasksArraySize();
+    }
+
+    /**
+     * Initialises the tasks array based on the project type. 
+     */
+    private void setTasksArraySize() {
+        if (projectType.equalsIgnoreCase("Small")) {
+            tasks = new Task[1];
+        } else if (projectType.equalsIgnoreCase("Medium")) {
+            tasks = new Task [2];
+        } else if (projectType.equalsIgnoreCase("Large")) {
+            tasks = new Task[3];
+        } else {
+            tasks = new Task[0]; 
+        }
     }
     
-    /**
-     * Gets Task 1.
-     * @return task1 as Task
+    /** 
+     * Gets the array of the tasks.
+     * @return Task array
      */
-    public Task getTask1() {
-        return task1;
-    }
-    
-    /**
-     * Sets Task 1.
-     * @param task1 Task
-     */
-    public void setTask1(Task task1) {
-        this.task1 = task1;
-    }
-    
-    /**
-     * Gets Task 2.
-     * @return task2 as Task
-     */
-    public Task getTask2() {
-        return task2;
-    }
-    
-    /**
-     * Sets Task 2.
-     * @param task2 Task
-     */
-    public void setTask2(Task task2) {
-        this.task2 = task2;
-    }
-    
-    /**
-     * Gets Task 3.
-     * @return task3 as Task
-     */
-    public Task getTask3() {
-        return task3;
-    }
-    
-    /**
-     * Sets Task 3.
-     * @param task3 Task
-     */
-    public void setTask3(Task task3) {
-        this.task3 = task3;
+    public Task[] getTasks() {
+        return tasks;
     }
 }
