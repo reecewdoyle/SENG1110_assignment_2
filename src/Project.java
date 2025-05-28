@@ -87,4 +87,15 @@ public class Project {
     public Task[] getTasks() {
         return tasks;
     }
+
+    /**
+    * Checks if all project slots are currently empty.
+    * @return true if no projects exist, false otherwise.
+    */
+    private boolean noProjectsExist() {
+        for (Project p : projects) {
+            if (p != null) return false;
+        }
+        return true;
+    }
 }

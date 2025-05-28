@@ -10,9 +10,10 @@ public class UserInterface {
     // Instance Variables
     // -------------------------------------------------------------------------
     
-    private Project project1;
-    private Project project2;
-    private Project project3;
+    // private Project project1;
+    // private Project project2;
+    // private Project project3;
+    private Project[] projects = new Project[3];
     private Scanner scannerInput;
     
     // -------------------------------------------------------------------------
@@ -34,9 +35,13 @@ public class UserInterface {
      * Initialises projects and scanner, loads seed data, and handles user menu input.
      */
     public void run() {
-      project1 = null;
-      project2 = null;
-      project3 = null;
+    //   project1 = null;
+    //   project2 = null;
+    //   project3 = null;
+    for (int i = 0; i < projects.length; i++) {
+        projects[i] = null;
+    }
+
 
       scannerInput = new Scanner(System.in);
 
