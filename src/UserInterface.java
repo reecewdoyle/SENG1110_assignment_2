@@ -512,14 +512,52 @@ public class UserInterface {
 
 /**
  * Prompts the user to enter a task type (A, S, or L),
- * then loops through all saved projects and displays tasks
- * that match the selected type.
- * If no matching tasks are found, a message is displayed.
+ * then displays all matching tasks from all projects.
+ * If no tasks match, informs the user.
  */
     private void filterTasksByType() {
-        System.out.println("filterTasksByType() not implemented yet.");
-    }
+        if (noProjectsExist()) {
+            System.out.println("\nThere are no saved projects to filter tasks from.");
+            return;
+        }
 
+        // Prompt for task type
+        char type = ' ';
+        boolean validType = false;
+        do {
+            System.out.print("\nEnter task type to filter by (A = Admin, S = Support, L = Logistics): ");
+            String input = scannerInput.nextLine().trim().toUpperCase();
+            if (input.length() == 1 && "ASL".contains(input)) {
+                type = input.charAt(0);
+                validType = true;
+            } else {
+                System.out.println("Invalid input. Please enter a single character: A, S, or L.");
+            }
+        } while (!validType);
+
+        boolean foundType = false;
+        System.out.println("\nMatching tasks:");
+
+        for (Project p : projects) {
+            if (p != null) {
+                for (Task t : p.getTasks()) {
+                    if (t != null && t.getTaskType() == type) {
+                        foundType = true;
+                        String status = t.isCompleted() ? "Completed" : "Incomplete";
+                        System.out.println("- Project: " + p.getProjectName() +
+                                        " | Task ID: " + t.getTaskId() +
+                                        " | Desc: " + t.getDescription() +
+                                        " | Duration: " + t.getTaskDuration() + "h" +
+                                        " | Status: " + status);
+                    }
+                }
+            }
+        }
+
+        if (!foundType) {
+            System.out.println("No tasks of type " + type + " were found.");
+        }
+    }
 // -------------------------------------------------------------------------
 // DISPLAY PROJECT SUMMARY
 // -------------------------------------------------------------------------
