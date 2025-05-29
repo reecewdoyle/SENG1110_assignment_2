@@ -231,7 +231,134 @@ private void createProject() {
  * Ensures the project exists, has space for tasks, and all inputs are valid.
  */
     private void addTask() {
-        System.out.println("addTask() not implemented yet.");
+        if (noProjectsExist()) {
+            System.out.println("There are no projects to add a task to.");
+            return;
+        }
+
+        // Display existing projects
+        displayExistingProjects();
+
+        Project workProject = null;
+        boolean projectSelected = false;
+
+        // Prompt user to select a project by ID
+        while (!projectSelected) {
+            int selectedId = promptExistingProjectId(scannerInput);
+
+            if (selectedId == -1) {
+                System.out.println("Task creation cancelled.");
+                return;
+            }
+            for (Project p : projects) {
+                if (p != null && p.getProjectId() == selectedId) {
+                    workProject = p;
+                    projectSelected = true;
+                    break;
+                }
+            }
+
+            if (!projectSelected) {
+                System.out.println("No project found with ID: " + selectedId + ". Please try again or enter -1 to cancel.");
+            }
+        }
+
+        // Display the Selected Project
+        System.out.println("Selected Project: " + workProject.getProjectName());
+
+        // Display how many tasks this project can have
+        displayTaskLimitByProjectType(workProject.getProjectType());
+        System.out.println("Project Type: " + workProject.getProjectType());
+
+        // Check to see if there's room to add a task
+        if (!projectHasRoomForTask(workProject)) {
+            System.out.println("This project already has the maximum number of tasks allowed.");
+            return;
+        }
+
+        // Task ID input and validation
+        int taskId = promptValidTaskId(scannerInput);
+
+        // Task description input
+        String description;
+        do {
+            System.out.print("\nEnter task description: ");
+            description = scannerInput.nextLine().trim();
+            if (description.isEmpty()) {
+                System.out.println("Description cannot be empty.");
+            }
+
+        } while (description.isEmpty());
+
+        // Task type input and validation
+        char taskType = ' ';
+        boolean validTaskType = false;
+        do {
+            System.out.print("\nEnter task type (A = Admin, S = Support, L = Logistics): ");
+            String input = scannerInput.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Task type cannot be empty. Please enter A, S, or L.");
+                continue;
+            }
+
+            input = input.toUpperCase();
+            
+            if (input.length() == 1) {
+                taskType = input.charAt(0);
+                if (taskType == 'A' || taskType == 'S' || taskType == 'L') {
+                    validTaskType = true;
+                } else {
+                    System.out.println("Invalid task type. Please enter A, S or L.");
+                }
+            } else {
+                System.out.println("Please enter a single letter: A, S, or L.");
+            }
+        } while (!validTaskType);
+
+        // Task duration input
+        int duration = 0;
+        boolean validDuration = false;
+
+        do {
+            System.out.print("\nEnter task duration in hours (positive whole number): ");
+            if (scannerInput.hasNextInt()) {
+                duration = scannerInput.nextInt();
+                scannerInput.nextInt();
+
+                if (duration > 0) {
+                    validDuration = true;
+                } else {
+                    System.out.println("Duration must be greater than 0.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter the number of hours.");
+                scannerInput.next();
+            }
+        } while (!validDuration);
+
+        // Create and assign task
+        Task newTask = new Task();
+        newTask.setTaskId(taskId);
+        newTask.setDescription(description);
+        newTask.setTaskType(taskType);
+        newTask.setTaskDuration(duration);
+        newTask.setCompleted(false);
+
+        boolean taskAdded = false;
+
+        for (int i =0; i < workProject.getTasks().length; i++) {
+            if (workProject.getTasks()[i] == null) {
+                workProject.getTasks()[i] = newTask;
+                taskAdded = true;
+                System.out.println("\nTask successfully added to project.");
+                break;
+            }
+        }
+
+        if (!taskAdded) {
+            System.out.println("\nError: No available task slots in this project.");
+        }
     }
 
 // -------------------------------------------------------------------------
@@ -512,6 +639,108 @@ private void displayExistingProjects() {
             System.out.println("- ID: " + p.getProjectId() + " | Name: " + p.getProjectName());
         }
     }
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD: Display Task Limit for Project Type
+// -------------------------------------------------------------------------
+
+/**
+ * Displays how many tasks are allowed based on the given project type.
+ * Useful for informing the user before adding a new task.
+ *
+ * @param type The project type ("Small", "Medium", or "Large").
+ */
+private void displayTaskLimitByProjectType(String type) {
+    switch (type) {
+        case "Small":
+            System.out.println("This project allows only 1 task.");
+            break;
+        case "Medium":
+            System.out.println("This project allows up to 2 tasks.");
+            break;
+        case "Large":
+            System.out.println("This project allows up to 3 tasks.");
+            break;
+        default:
+            System.out.println("Unknown project type.");
+    }
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD: Check if Project Has Room for Another Task
+// -------------------------------------------------------------------------
+
+/**
+ * Checks if the given project can accept more tasks based on its type.
+ * Small projects can have 1 task, Medium 2, and Large 3.
+ *
+ * @param project The project to check.
+ * @return true if the project has space for another task, false otherwise.
+ */
+private boolean projectHasRoomForTask(Project project) {
+    int taskLimit = 0;
+    switch (project.getProjectType()) {
+        case "Small":
+            taskLimit = 1;
+            break;
+        case "Medium":
+            taskLimit = 2;
+            break;
+        case "Large":
+            taskLimit = 3;
+            break;
+    }
+
+    int currentTasks = 0;
+    for (Task t : project.getTasks()) {
+        if (t != null) currentTasks++;
+    }
+
+    return currentTasks < taskLimit;
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD: Prompt for Valid Task ID
+// -------------------------------------------------------------------------
+
+/**
+ * Prompts the user to enter a valid task ID between 1 and 9.
+ * Ensures the input is an integer within range.
+ * 
+ * Loops until a valid ID is provided. Does not check for uniqueness.
+ *
+ * @param scannerInput The Scanner object used to read user input.
+ * @return A validated integer task ID between 1 and 9.
+ */
+private int promptValidTaskId(Scanner scannerInput) {
+    int taskId = 0;
+    boolean validInput = false;
+
+    do {
+        System.out.print("\nEnter Task ID (1-9): ");
+        if (scannerInput.hasNextLine()) {
+            String input = scannerInput.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty.");
+                continue;
+            }
+
+            try {
+                taskId = Integer.parseInt(input);
+                if (taskId >= 1 && taskId <= 9) {
+                    validInput = true;
+                } else {
+                    System.out.println("Task ID must be between 1 and 9.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 9.");
+            }
+        }
+    } while (!validInput);
+
+    return taskId;
 }
 
 
