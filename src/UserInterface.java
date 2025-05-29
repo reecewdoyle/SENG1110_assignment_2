@@ -120,64 +120,63 @@ public class UserInterface {
  * Validates input and assigns the project to the next available project slot.
  * Allows a maximum of three projects in the system at any time.
  */
-private void createProject() {
-    // Check if there's room for a new project
-    if (!hasAvailableProjectSlot()) {
-        System.out.println("\nMaximum projects reached!");
-        return;
-    }
-
-    Project p = new Project();
-
-    // Get validated project ID
-    int id = promptValidProjectId(scannerInput);
-    p.setProjectId(id);
-    System.out.println("\nProject ID " + p.getProjectId());
-    
-    // ----------------- Project Name Input -----------------
-    System.out.print("\nEnter Project Name: ");
-    String projectName = scannerInput.nextLine().trim();
-    while (projectName.isEmpty()) {
-        System.out.println("Project name cannot be empty. Please enter a valid name:");
-        projectName = scannerInput.nextLine().trim();
-    }
-    p.setProjectName(projectName);
-    System.out.println("Project Name " + p.getProjectName());        
-
-    // ----------------- Project Type Input -----------------
-    System.out.print("\nEnter Project Type (Small, Medium or Large): ");
-    String projectType = scannerInput.nextLine().trim();
-
-    // Ensure project type input is not empty before normalising and validating
-    while (projectType.isEmpty()) {
-        System.out.print("Project type cannot be empty. Please enter Small, Medium, or Large: ");
-        projectType = scannerInput.nextLine().trim();
-    } 
-
-    // Normalize case
-    projectType = projectType.toLowerCase();
-    projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
-
-    // Validate type
-    while (!projectType.equals("Small") && !projectType.equals("Medium") && !projectType.equals("Large")) {
-        System.out.print("Invalid project type. Please enter Small, Medium, or Large: ");
-        projectType = scannerInput.nextLine().trim();
-        projectType = projectType.toLowerCase();
-        projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
-    }
-    
-    p.setProjectType(projectType);
-    System.out.println("Project Type " + p.getProjectType());
-
-    // ----------------- Assign Project -----------------
-    for (int i = 0; i < projects.length; i++) {
-        if (projects[i] == null) {
-            projects[i] = p;
-            System.out.println("\nProject successfully created!");
+    private void createProject() {
+        // Check if there's room for a new project
+        if (!hasAvailableProjectSlot()) {
+            System.out.println("\nMaximum projects reached!");
             return;
         }
-    }
 
+        Project p = new Project();
+
+        // Get validated project ID
+        int id = promptValidProjectId(scannerInput);
+        p.setProjectId(id);
+        System.out.println("\nProject ID " + p.getProjectId());
+        
+        // ----------------- Project Name Input -----------------
+        System.out.print("\nEnter Project Name: ");
+        String projectName = scannerInput.nextLine().trim();
+        while (projectName.isEmpty()) {
+            System.out.println("Project name cannot be empty. Please enter a valid name:");
+            projectName = scannerInput.nextLine().trim();
+        }
+        p.setProjectName(projectName);
+        System.out.println("Project Name " + p.getProjectName());        
+
+        // ----------------- Project Type Input -----------------
+        System.out.print("\nEnter Project Type (Small, Medium or Large): ");
+        String projectType = scannerInput.nextLine().trim();
+
+        // Ensure project type input is not empty before normalising and validating
+        while (projectType.isEmpty()) {
+            System.out.print("Project type cannot be empty. Please enter Small, Medium, or Large: ");
+            projectType = scannerInput.nextLine().trim();
+        } 
+
+        // Normalize case
+        projectType = projectType.toLowerCase();
+        projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
+
+        // Validate type
+        while (!projectType.equals("Small") && !projectType.equals("Medium") && !projectType.equals("Large")) {
+            System.out.print("Invalid project type. Please enter Small, Medium, or Large: ");
+            projectType = scannerInput.nextLine().trim();
+            projectType = projectType.toLowerCase();
+            projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
+        }
+        
+        p.setProjectType(projectType);
+        System.out.println("Project Type " + p.getProjectType());
+
+        // ----------------- Assign Project -----------------
+        for (int i = 0; i < projects.length; i++) {
+            if (projects[i] == null) {
+                projects[i] = p;
+                System.out.println("\nProject successfully created!");
+                return;
+            }
+        }
     }
 
 
@@ -355,7 +354,52 @@ private void createProject() {
  * User can enter -1 at the task ID prompt to return to the main menu.
  */
     private void markTaskAsCompleted() {
-        System.out.println("markTaskAsCompleted() not implemented yet.");
+        if (noProjectsExist()) {
+            System.out.println("There are no projects to add a task to.");
+            return;
+        }
+
+        // Display existing projects
+        displayExistingProjects();
+
+        // Prompt user to select a project by ID
+        Project workProject = selectProjectById(scannerInput);
+        if (workProject == null) {
+            System.out.println("Task creation cancelled.");
+            return;
+        }
+
+        // Display the Selected Project
+        System.out.println("Selected Project: " + workProject.getProjectName());
+
+        // Display tasks in the selected project
+        boolean hasTasks = false;
+        for (Task t : workProject.getTasks()) {
+            if (t != null) {
+                hasTasks = true;
+                System.out.println("- Task ID: " + t.getTaskId() + " | Desc: " + t.getDescription() + " | Completed: " + t.isCompleted());
+            }
+        }
+
+        if (!hasTasks) {
+            System.out.println("This project has no tasks to mark as completed.");
+        }
+
+        // Prompt user to select a task by ID
+        Task selectedTask = selectTaskById(workProject, scannerInput);
+        if (selectedTask == null) {
+            System.out.println("Task selection cancelled.");
+            return;
+        }
+
+        if (selectedTask.isCompleted()) {
+            System.out.println("Task is already marked as completed.");
+        } else {
+            selectedTask.setCompleted(true);
+            System.out.println("Task marked as completed.");
+        }
+
+
     }
 
 // -------------------------------------------------------------------------
@@ -476,7 +520,7 @@ private void createProject() {
     }
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Check if No Projects Exist
+// HELPER METHOD 1: Check if No Projects Exist
 // -------------------------------------------------------------------------
 
 /**
@@ -494,7 +538,7 @@ private boolean noProjectsExist() {
 
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Check for Available Project Slot
+// HELPER METHOD 2: Check for Available Project Slot
 // -------------------------------------------------------------------------
 /**
  * Scans the projects array to determine if there is an empty slot available.
@@ -502,8 +546,6 @@ private boolean noProjectsExist() {
  *
  * @return true if at least one project slot is null (i.e. available), false otherwise.
  */
-
-
 private boolean hasAvailableProjectSlot() {
     for (Project p : projects) {
         if (p == null) {
@@ -514,7 +556,7 @@ private boolean hasAvailableProjectSlot() {
 }
     
 // -------------------------------------------------------------------------
-// HELPER METHOD: Prompt for Valid and Unique Project ID
+// HELPER METHOD 3: Prompt for Valid and Unique Project ID
 // -------------------------------------------------------------------------
 
 /**
@@ -527,7 +569,6 @@ private boolean hasAvailableProjectSlot() {
  * @param scannerInput The Scanner object used to read user input.
  * @return A validated and unique project ID.
  */
-
 private int promptValidProjectId(Scanner scannerInput) {
     int id = 0;
     boolean validProjectId = false;
@@ -566,7 +607,7 @@ private int promptValidProjectId(Scanner scannerInput) {
 }
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Prompt for Existing Project ID
+// HELPER METHOD 4: Prompt for Existing Project ID
 // -------------------------------------------------------------------------
 
 /**
@@ -607,7 +648,7 @@ private int promptExistingProjectId(Scanner scannerInput) {
 }
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Display Existing Projects
+// HELPER METHOD 5: Display Existing Projects
 // -------------------------------------------------------------------------
 
 /**
@@ -625,7 +666,7 @@ private void displayExistingProjects() {
 }
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Display Task Limit for Project Type
+// HELPER METHOD 6: Display Task Limit for Project Type
 // -------------------------------------------------------------------------
 
 /**
@@ -651,7 +692,7 @@ private void displayTaskLimitByProjectType(String type) {
 }
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Check if Project Has Room for Another Task
+// HELPER METHOD 7: Check if Project Has Room for Another Task
 // -------------------------------------------------------------------------
 
 /**
@@ -684,7 +725,7 @@ private boolean projectHasRoomForTask(Project project) {
 }
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Prompt for Valid Task ID
+// HELPER METHOD 8: Prompt for Valid Task ID
 // -------------------------------------------------------------------------
 
 /**
@@ -728,7 +769,7 @@ private int promptValidTaskId(Scanner scannerInput) {
 
 
 // -------------------------------------------------------------------------
-// HELPER METHOD: Prompt and Return Valid Project Object by ID
+// HELPER METHOD 9: Prompt and Return Valid Project Object by ID
 // -------------------------------------------------------------------------
 
 /**
@@ -753,6 +794,48 @@ private Project selectProjectById(Scanner scannerInput) {
         }
 
         System.out.println("No project found with ID: " + selectedId + ". Please try again or enter -1 to cancel.");
+    }
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD 10: Select Task by ID from a Project
+// -------------------------------------------------------------------------
+
+/**
+ * Prompts the user to enter a Task ID to select a task from the given project.
+ * Validates that the task exists. Entering -1 cancels the operation.
+ *
+ * @param project The project containing the tasks.
+ * @param scannerInput The Scanner object for user input.
+ * @return The selected Task object, or null if cancelled or not found.
+ */
+private Task selectTaskById(Project project, Scanner scannerInput) {
+    while (true) {
+        System.out.print("\nEnter the Task ID to select (or -1 to cancel): ");
+        String input = scannerInput.nextLine().trim();
+
+        if (input.isEmpty()) {
+            System.out.println("Input cannot be empty.");
+            continue;
+        }
+
+        try {
+            int taskId = Integer.parseInt(input);
+
+            if (taskId == -1) {
+                return null; // User cancelled
+            }
+
+            for (Task t : project.getTasks()) {
+                if (t != null && t.getTaskId() == taskId) {
+                    return t;
+                }
+            }
+
+            System.out.println("No task found with ID: " + taskId + ". Please try again or enter -1 to cancel.");
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+        }
     }
 }
 
