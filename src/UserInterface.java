@@ -473,16 +473,39 @@ public class UserInterface {
 
 /**
  * Displays only completed tasks for a specific project by projectId.
- * Prompts the user to enter a valid project ID, validates it, and checks the selected project
- * for any tasks marked as completed. If completed tasks exist, they are displayed in a formatted
- * list. If none are found, an appropriate message is shown.
- * Entering -1 returns to the main menu without displaying anything.
+ * Prompts the user to select a project, then lists completed tasks.
+ * If none are found, an appropriate message is shown.
  */
-
     private void displayCompletedTasks() {
-        System.out.println("displayCompletedTasks() not implemented yet.");
-    }
+        if (noProjectsExist()) {
+            System.out.println("\nThere are no saved projects to check for completed tasks.");
+            return;
+        }
 
+        displayExistingProjects();
+        Project selectedProject = selectProjectById(scannerInput);
+        if (selectedProject == null) {
+            System.out.println("Returning to main menu...");
+            return;
+        }
+
+        System.out.println("\nCompleted Tasks in Project: " + selectedProject.getProjectName());
+        boolean foundTask = false;
+
+        for (Task t : selectedProject.getTasks()) {
+            if (t != null && t.isCompleted()) {
+                System.out.println("* Task ID: " + t.getTaskId()
+                    + ", Description: " + t.getDescription()
+                    + ", Type: " + t.getTaskType()
+                    + ", Duration: " + t.getTaskDuration() + "h");
+                foundTask = true;
+            }
+        }
+
+        if (!foundTask) {
+            System.out.println("No completed tasks found in this project.");
+        }
+    }
 // -------------------------------------------------------------------------
 // FILTER TASKS BY TYPE
 // -------------------------------------------------------------------------
