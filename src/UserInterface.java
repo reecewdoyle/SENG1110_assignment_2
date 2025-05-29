@@ -2,6 +2,10 @@
  * UserInterface class handles all user interactions for the Project Management System
  * Provides a menu-driven interface for managing projects and tasks
  */
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -616,7 +620,77 @@ public class UserInterface {
  * - Skips invalid entries and handles file-related exceptions
  */
     private void loadFromFile() {
-        System.out.println("loadFromFile() not implemented yet.");
+        System.out.print("Enter filename to load from (e.g., ProjectData.txt): ");
+        String filename = scannerInput.nextLine().trim();
+
+        try (Scanner fileScanner = new Scanner(new File(filename))) {
+            Project[] loadedProjects = new Project[10];
+            int projectIndex = -1;
+
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine().trim();
+                String[] tokens = line.split(",");
+
+                if (tokens.length == 3) {
+                    // Project line
+                    if (projectIndex == 9) {
+                        System.out.println("Maximum project limit reached. Skipping additional projects.");
+                        break;
+                    }
+
+                    int id = Integer.parseInt(tokens[0]);
+                    String name = tokens[1];
+                    String type = tokens[2];
+
+                    Project p = new Project();
+                    p.setProjectId(id);
+                    p.setProjectName(name);
+                    p.setProjectType(type);
+                    loadedProjects[++projectIndex] = p;
+
+                } else if (tokens.length == 5 && projectIndex >= 0) {
+                    // Task line
+                    Project current = loadedProjects[projectIndex];
+
+                    if (!projectHasRoomForTask(current)) {
+                        System.out.println("Project ID " + current.getProjectId() + " has no room for more tasks. Skipping task.");
+                        continue;
+                    }
+
+                    int taskId = Integer.parseInt(tokens[0]);
+                    String desc = tokens[1];
+                    char type = tokens[2].charAt(0);
+                    int duration = Integer.parseInt(tokens[3]);
+                    boolean completed = Boolean.parseBoolean(tokens[4]);
+
+                    Task t = new Task();
+                    t.setTaskId(taskId);
+                    t.setDescription(desc);
+                    t.setTaskType(type);
+                    t.setTaskDuration(duration);
+                    t.setCompleted(completed);
+
+                    for (int i = 0; i < current.getTasks().length; i++) {
+                        if (current.getTasks()[i] == null) {
+                            current.getTasks()[i] = t;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Load valid projects into the main array
+            for (int i = 0; i < projects.length; i++) {
+                projects[i] = i < loadedProjects.length ? loadedProjects[i] : null;
+            }
+
+            System.out.println("Projects loaded successfully.");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + filename);
+        } catch (Exception e) {
+            System.out.println("Error reading from file: " + e.getMessage());
+        }
     }
 
 // -------------------------------------------------------------------------
@@ -636,7 +710,31 @@ public class UserInterface {
  * - Handles exceptions to ensure data integrity
  */
     private void saveToFile() {
-        System.out.println("saveToFile() not implemented yet.");
+        System.out.print("Enter filename to save to (e.g., ProjectData.txt): ");
+        String filename = scannerInput.nextLine().trim();
+
+        try (PrintWriter writer = new PrintWriter(new File(filename))) {
+            for (Project p : projects) {
+                if (p != null) {
+                    // Write project line
+                    writer.println(p.getProjectId() + "," + p.getProjectName() + "," + p.getProjectType());
+
+                    // Write task lines
+                    for (Task t : p.getTasks()) {
+                        if (t != null) {
+                            writer.println(t.getTaskId() + "," +
+                                        t.getDescription() + "," +
+                                        t.getTaskType() + "," +
+                                        t.getTaskDuration() + "," +
+                                        t.isCompleted());
+                        }
+                    }
+                }
+            }
+            System.out.println("Projects saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
     }
 
 // -------------------------------------------------------------------------
