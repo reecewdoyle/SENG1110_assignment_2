@@ -970,4 +970,126 @@ private void displayTasksForProject(Project project) {
     }
 }
 
+// -------------------------------------------------------------------------
+// HELPER METHOD 12: Display Average Durations Across All Projects
+// -------------------------------------------------------------------------
+
+/**
+ * Calculates and displays the average duration for each task type (Admin, Support, Logistics)
+ * across all saved projects.
+ *
+ * @param projects An array of all saved projects
+ */
+private void displayAverageDurationsAcrossAllProjects(Project[] projects) {
+    int totalAdmin = 0, countAdmin = 0;
+    int totalSupport = 0, countSupport = 0;
+    int totalLogistics = 0, countLogistics = 0;
+
+    // Loop through all projects and their tasks
+    for (Project p : projects) {
+        if (p != null) {
+            for (Task t : p.getTasks()) {
+                if (t != null) {
+                    switch (t.getTaskType()) {
+                        case 'A':
+                            totalAdmin += t.getTaskDuration();
+                            countAdmin++;
+                            break;
+                        case 'S':
+                            totalSupport += t.getTaskDuration();
+                            countSupport++;
+                            break;
+                        case 'L':
+                            totalLogistics += t.getTaskDuration();
+                            countLogistics++;
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    System.out.println("\n------------------------ Average Task Duration ------------------\n");
+
+    // Display average for Admin tasks
+    if (countAdmin > 0) {
+        System.out.println("* Average task duration of administrative tasks is " + (totalAdmin / countAdmin) + " hours\n");
+    } else {
+        System.out.println("* No administrative tasks found.\n");
+    }
+
+    // Display average for Support tasks
+    if (countSupport > 0) {
+        System.out.println("* Average task duration of support tasks is " + (totalSupport / countSupport) + " hours\n");
+    } else {
+        System.out.println("* No support tasks found.\n");
+    }
+
+    // Display average for Logistics tasks
+    if (countLogistics > 0) {
+        System.out.println("* Average task duration of logistics tasks is " + (totalLogistics / countLogistics) + " hours\n");
+    } else {
+        System.out.println("* No logistics tasks found.\n");
+    }
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD 13: Display Task Duration Breakdown for a Single Project
+// -------------------------------------------------------------------------
+
+/**
+ * Calculates and displays the average duration for each task type (Admin, Support, Logistics)
+ * within a single project.
+ *
+ * @param p The project to analyze
+ */
+private void displayTaskDurationBreakdown(Project p) {
+    int admin = 0, countA = 0;
+    int support = 0, countS = 0;
+    int logistics = 0, countL = 0;
+
+    // Loop through each task in the project and tally durations by type
+    for (Task t : p.getTasks()) {
+        if (t != null) {
+            switch (t.getTaskType()) {
+                case 'A':
+                    admin += t.getTaskDuration();
+                    countA++;
+                    break;
+                case 'S':
+                    support += t.getTaskDuration();
+                    countS++;
+                    break;
+                case 'L':
+                    logistics += t.getTaskDuration();
+                    countL++;
+                    break;
+            }
+        }
+    }
+
+    System.out.println("\n---------------- Project " + p.getProjectId() + " ----------------\n");
+
+    // Display Admin average
+    if (countA > 0) {
+        System.out.println("* Admin average: " + (admin / countA) + " hours\n");
+    } else {
+        System.out.println("* No admin tasks found.\n");
+    }
+
+    // Display Support average
+    if (countS > 0) {
+        System.out.println("* Support average: " + (support / countS) + " hours\n");
+    } else {
+        System.out.println("* No support tasks found.\n");
+    }
+
+    // Display Logistics average
+    if (countL > 0) {
+        System.out.println("* Logistics average: " + (logistics / countL) + " hours\n");
+    } else {
+        System.out.println("* No logistics tasks found.\n");
+    }
+}
+
 } // end of UserInterface
