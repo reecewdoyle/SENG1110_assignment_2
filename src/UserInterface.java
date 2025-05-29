@@ -10,9 +10,6 @@ public class UserInterface {
     // Instance Variables
     // -------------------------------------------------------------------------
     
-    // private Project project1;
-    // private Project project2;
-    // private Project project3;
     private Project[] projects = new Project[3];
     private Scanner scannerInput;
     
@@ -125,84 +122,66 @@ public class UserInterface {
  */
 private void createProject() {
     // Check if there's room for a new project
-    if (project1 == null || project2 == null || project3 == null) {
-        Project p = new Project();
+    if (!hasAvailableProjectSlot()) {
+        System.out.println("\nMaximum projects reached!");
+        return;
+    }
 
-        // ----------------- Project ID Input -----------------
-        int id = 0;
-        boolean validProjectId = false;
+    Project p = new Project();
 
-        do {
-            System.out.print("\nEnter Project ID (1-999): ");
-            if (scannerInput.hasNextInt()) {
-                id = scannerInput.nextInt();
-                scannerInput.nextLine(); // Consume leftover newline
+    // Get validated project ID
+    int id = promptValidProjectId(scannerInput);
+    p.setProjectId(id);
+    System.out.println("\nProject ID " + p.getProjectId());
+    
+    // ----------------- Project Name Input -----------------
+    System.out.print("\nEnter Project Name: ");
+    String projectName = scannerInput.nextLine().trim();
+    while (projectName.isEmpty()) {
+        System.out.println("Project name cannot be empty. Please enter a valid name:");
+        projectName = scannerInput.nextLine().trim();
+    }
+    p.setProjectName(projectName);
+    System.out.println("Project Name " + p.getProjectName());        
 
-                if (id > 0 && id <= 999) {
-                    // Check ID is not a duplicate
-                    if ((project1 != null && project1.getProjectId() == id) ||
-                        (project2 != null && project2.getProjectId() == id) ||
-                        (project3 != null && project3.getProjectId() == id)) {
-                        System.out.println("Project ID already exists.");
-                    } else {
-                        validProjectId = true;
-                    }
-                } else {
-                    System.out.println("Project ID must be a positive whole number (1-999).");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a positive whole number (1-999).");
-                scannerInput.next(); // Clear invalid token
-            }
-        } while (!validProjectId);
+    // ----------------- Project Type Input -----------------
+    System.out.print("\nEnter Project Type (Small, Medium or Large): ");
+    String projectType = scannerInput.nextLine().trim();
 
-        p.setProjectId(id);
-        System.out.println("\nProject ID " + p.getProjectId());
+    // Ensure project type input is not empty before normalising and validating
+    while (projectType.isEmpty()) {
+        System.out.println("Project type cannot be empty. Please enter Small, Medium, or Large:");
+        projectType = scannerInput.nextLine().trim();
+    } 
 
-        // ----------------- Project Name Input -----------------
-        System.out.print("\nEnter Project Name: ");
-        String projectName = scannerInput.nextLine().trim();
-        while (projectName.isEmpty()) {
-            System.out.println("Project name cannot be empty. Please enter a valid name:");
-            projectName = scannerInput.nextLine().trim();
-        }
-        p.setProjectName(projectName);
-        System.out.println("Project Name " + p.getProjectName());
+    // Normalize case
+    projectType = projectType.toLowerCase();
+    projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
 
-        // ----------------- Project Type Input -----------------
-        System.out.print("\nEnter Project Type (Small, Medium or Large): ");
-        String projectType = scannerInput.nextLine().trim();
-
-        // Ensure project type input is not empty before normalising and validating
-        while (projectType.isEmpty()) {
-            System.out.println("Project type cannot be empty. Please enter Small, Medium, or Large:");
-            projectType = scannerInput.nextLine().trim();
-        } 
-
-        // Normalise case
+    // Validate type
+    while (!projectType.equals("Small") && !projectType.equals("Medium") && !projectType.equals("Large")) {
+        System.out.println("Invalid project type. Please enter Small, Medium, or Large:");
+        projectType = scannerInput.nextLine().trim();
         projectType = projectType.toLowerCase();
         projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
-
-        // Validate type
-        while (!projectType.equals("Small") && !projectType.equals("Medium") && !projectType.equals("Large")) {
-            System.out.println("Invalid project type. Please enter Small, Medium, or Large:");
-            projectType = scannerInput.nextLine().trim();
-            projectType = projectType.toLowerCase();
-            projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
-        }
-
-        p.setProjectType(projectType);
-        System.out.println("Project Type " + p.getProjectType());
-
-        // ----------------- Assign Project -----------------
-        if (project1 == null) project1 = p;
-        else if (project2 == null) project2 = p;
-        else if (project3 == null) project3 = p;
-        System.out.println("\nProject successfully created! Cannot create more than three.");
-    } else {
-        System.out.println("\nMaximum projects reached!");
     }
-}
+    
+    p.setProjectType(projectType);
+    System.out.println("Project Type " + p.getProjectType());
+
+    // ----------------- Assign Project -----------------
+    for (int i = 0; i < projects.length; i++) {
+        if (projects[i] == null) {
+            projects[i] = p;
+            System.out.println("\nProject successfully created!");
+            return;
+        }
+    }
+
+    
+
+    }
+
 
 // -------------------------------------------------------------------------
 // REMOVE PROJECT
@@ -359,5 +338,60 @@ private void createProject() {
     private void saveToFile() {
         System.out.println("saveToFile() not implemented yet.");
     }
+
+
+// -------------------------------------------------------------------------
+// HELPER METHOD: Check for Available Project Slot
+// -------------------------------------------------------------------------
+
+private boolean hasAvailableProjectSlot() {
+    for (Project p : projects) {
+        if (p == null) {
+            return true;
+        }
+    }
+    return false;
+}
+    
+// -------------------------------------------------------------------------
+// HELPER METHOD: Prompt for Valid and Unique Project ID
+// -------------------------------------------------------------------------
+
+private int promptValidProjectId(Scanner scannerInput) {
+    int id = 0;
+    boolean validProjectId = false;
+    
+    do {
+        System.out.print("\nEnter Project ID (1-999): ");
+        
+        if (scannerInput.hasNextInt()) {
+            id = scannerInput.nextInt();
+            scannerInput.nextLine(); // clear newline
+            
+            if (id >= 1 && id <= 999) {
+                boolean duplicate = false;
+                for (Project p : projects) {
+                    if (p != null && p.getProjectId() == id) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (duplicate) {
+                    System.out.println("Project ID already exists.");
+                } else {
+                    validProjectId = true;
+                }
+            } else {
+                System.out.println("Project ID must be between 1 and 999.");
+            }
+        } else {
+            System.out.println("Invalid input. Please enter a number between 1 and 999.");
+            scannerInput.next(); // clear invalid token
+        }
+        
+    } while (!validProjectId);
+    
+    return id;
 }
 
+}
