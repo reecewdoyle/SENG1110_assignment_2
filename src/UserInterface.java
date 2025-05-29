@@ -178,8 +178,6 @@ private void createProject() {
         }
     }
 
-    
-
     }
 
 
@@ -193,7 +191,41 @@ private void createProject() {
  * Entering -1 will return to the main menu without deleting anything.
  */
     private void removeProject() {
-        System.out.println("removeProject() not implemented yet.");
+        // Check if there are any projects to remove
+        if (noProjectsExist()) {
+            System.out.println("\nNo projects exist to remove.");
+            return;
+        }
+        // Prompt for the ID of the project to remove
+        System.out.print("\nEnter the Project ID to remove (or -1 to cancel): ");
+
+        int projectIdToRemove = -1;
+        if (scannerInput.hasNextInt()) {
+            projectIdToRemove = scannerInput.nextInt();
+            scannerInput.nextLine(); // clear newline
+        } else {
+            System.out.println("Invalid input. Returning to menu.");
+            scannerInput.next(); // clear invalid input
+            return;
+        }
+
+        if (projectIdToRemove == -1) {
+            System.out.println("Removal cancelled.");
+            return;
+        }
+
+        // Try to find and remove the project
+        for (int i = 0; i < projects.length; i++) {
+            if (projects[i] != null && projects[i].getProjectId() == projectIdToRemove) {
+                projects[i] = null;
+                System.out.println("Project ID " + projectIdToRemove + " successfully removed.");
+                return;
+            }
+        }
+
+        // if no matching project was found
+        System.out.println("No project found with ID: " + projectIdToRemove);
+
     }
 
 // -------------------------------------------------------------------------
@@ -349,12 +381,12 @@ private void createProject() {
  * 
  * @return true if all project slots are null (i.e. no projects exist), false otherwise.
  */
-// private boolean noProjectsExist() {
-//     for (Project p : projects) {
-//         if (p != null) return false;
-//     }
-//     return true;
-// }
+private boolean noProjectsExist() {
+    for (Project p : projects) {
+        if (p != null) return false;
+    }
+    return true;
+}
 
 
 // -------------------------------------------------------------------------
