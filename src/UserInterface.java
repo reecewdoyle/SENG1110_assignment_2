@@ -196,6 +196,9 @@ private void createProject() {
             System.out.println("\nNo projects exist to remove.");
             return;
         }
+        
+        displayExistingProjects();
+
         while (true) {
             // Prompt for the ID of the project to remove
             int projectIdToRemove = promptExistingProjectId(scannerInput);
@@ -491,6 +494,24 @@ private int promptExistingProjectId(Scanner scannerInput) {
     } while (!validInput);
 
     return projectId;
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD: Display Existing Projects
+// -------------------------------------------------------------------------
+
+/**
+ * Displays a list of all currently saved projects.
+ * Useful for user reference before selecting a project by ID.
+ * Skips over any null project slots.
+ */
+private void displayExistingProjects() {
+    System.out.println("\nExisting Projects: ");
+    for (Project p : projects) {
+        if (p != null) {
+            System.out.println("- ID: " + p.getProjectId() + " | Name: " + p.getProjectName());
+        }
+    }
 }
 
 
