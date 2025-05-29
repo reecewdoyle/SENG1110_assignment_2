@@ -461,4 +461,45 @@ private int promptValidProjectId(Scanner scannerInput) {
     return id;
 }
 
-}// end of UserInterface
+// -------------------------------------------------------------------------
+// HELPER METHOD: Prompt for Existing Project ID
+// -------------------------------------------------------------------------
+
+/**
+ * Prompts the user to enter a project ID for an existing project.
+ * Accepts only numeric input and allows the user to enter -1 to cancel.
+ * 
+ * Loops until a valid integer is entered.
+ * 
+ * @param scannerInput The Scanner object used for reading user input.
+ * @return A valid integar project ID, or -1 if the user chooses to cancel. 
+*/
+private int promptExistingProjectId(Scanner scannerInput) {
+    int projectId = -1;
+    boolean validInput = false;
+
+    do {
+        System.out.print("\nEnter the Project ID to remove (or -1 to cancel): ");
+
+        if (scannerInput.hasNextLine()) {
+            String input = scannerInput.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty.");
+                continue;
+            }
+
+            try {
+                projectId = Integer.parseInt(input);
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number (between 1-999).");
+            }
+        }
+    } while (!validInput);
+
+    return projectId;
+}
+
+
+} // end of UserInterface
