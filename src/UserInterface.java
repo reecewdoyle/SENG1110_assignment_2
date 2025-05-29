@@ -339,10 +339,34 @@ private void createProject() {
         System.out.println("saveToFile() not implemented yet.");
     }
 
+// -------------------------------------------------------------------------
+// HELPER METHOD: Check if No Projects Exist
+// -------------------------------------------------------------------------
+
+/**
+ * Checks if all project slots in the array are currently empty.
+ * This is useful for preventing actions like displaying or removing projects when none exist.
+ * 
+ * @return true if all project slots are null (i.e. no projects exist), false otherwise.
+ */
+// private boolean noProjectsExist() {
+//     for (Project p : projects) {
+//         if (p != null) return false;
+//     }
+//     return true;
+// }
+
 
 // -------------------------------------------------------------------------
 // HELPER METHOD: Check for Available Project Slot
 // -------------------------------------------------------------------------
+/**
+ * Scans the projects array to determine if there is an empty slot available.
+ * Used before allowing a new project to be created, since the system only allows up to three projects.
+ *
+ * @return true if at least one project slot is null (i.e. available), false otherwise.
+ */
+
 
 private boolean hasAvailableProjectSlot() {
     for (Project p : projects) {
@@ -356,6 +380,17 @@ private boolean hasAvailableProjectSlot() {
 // -------------------------------------------------------------------------
 // HELPER METHOD: Prompt for Valid and Unique Project ID
 // -------------------------------------------------------------------------
+
+/**
+ * Prompts the user to enter a valid project ID between 1 and 999.
+ * Ensures the input is an integer within the valid range and that the ID
+ * is not already in use by an existing project.
+ * 
+ * Re-prompts the user for input until a valid and unique ID is provided.
+ *
+ * @param scannerInput The Scanner object used to read user input.
+ * @return A validated and unique project ID.
+ */
 
 private int promptValidProjectId(Scanner scannerInput) {
     int id = 0;
@@ -394,4 +429,4 @@ private int promptValidProjectId(Scanner scannerInput) {
     return id;
 }
 
-}
+}// end of UserInterface
