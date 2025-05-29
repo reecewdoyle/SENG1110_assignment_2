@@ -88,7 +88,7 @@ public class UserInterface {
           System.out.println("8. Filter tasks by type");
           System.out.println("9. Display project summary");
           System.out.println("-1 Exit");
-          System.out.println("Enter your choice: ");
+          System.out.print("Enter your choice: ");
             
       if (scannerInput.hasNextLine()) {
           String input = scannerInput.nextLine().trim();
@@ -150,7 +150,7 @@ private void createProject() {
 
     // Ensure project type input is not empty before normalising and validating
     while (projectType.isEmpty()) {
-        System.out.println("Project type cannot be empty. Please enter Small, Medium, or Large:");
+        System.out.print("Project type cannot be empty. Please enter Small, Medium, or Large: ");
         projectType = scannerInput.nextLine().trim();
     } 
 
@@ -160,7 +160,7 @@ private void createProject() {
 
     // Validate type
     while (!projectType.equals("Small") && !projectType.equals("Medium") && !projectType.equals("Large")) {
-        System.out.println("Invalid project type. Please enter Small, Medium, or Large:");
+        System.out.print("Invalid project type. Please enter Small, Medium, or Large: ");
         projectType = scannerInput.nextLine().trim();
         projectType = projectType.toLowerCase();
         projectType = projectType.substring(0, 1).toUpperCase() + projectType.substring(1);
