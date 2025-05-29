@@ -239,28 +239,11 @@ private void createProject() {
         // Display existing projects
         displayExistingProjects();
 
-        Project workProject = null;
-        boolean projectSelected = false;
-
         // Prompt user to select a project by ID
-        while (!projectSelected) {
-            int selectedId = promptExistingProjectId(scannerInput);
-
-            if (selectedId == -1) {
-                System.out.println("Task creation cancelled.");
-                return;
-            }
-            for (Project p : projects) {
-                if (p != null && p.getProjectId() == selectedId) {
-                    workProject = p;
-                    projectSelected = true;
-                    break;
-                }
-            }
-
-            if (!projectSelected) {
-                System.out.println("No project found with ID: " + selectedId + ". Please try again or enter -1 to cancel.");
-            }
+        Project workProject = selectProjectById(scannerInput);
+        if (workProject == null) {
+            System.out.println("Task creation cancelled.");
+            return;
         }
 
         // Display the Selected Project
@@ -743,5 +726,34 @@ private int promptValidTaskId(Scanner scannerInput) {
     return taskId;
 }
 
+
+// -------------------------------------------------------------------------
+// HELPER METHOD: Prompt and Return Valid Project Object by ID
+// -------------------------------------------------------------------------
+
+/**
+ * Prompts the user to select an existing project by entering its ID.
+ * Loops until a valid project is selected or the user cancels by entering -1.
+ *
+ * @param scannerInput Scanner object to read user input
+ * @return The selected Project object, or null if cancelled
+ */
+private Project selectProjectById(Scanner scannerInput) {
+    while (true) {
+        int selectedId = promptExistingProjectId(scannerInput);
+
+        if (selectedId == -1) {
+            return null;  // user cancelled
+        }
+
+        for (Project p : projects) {
+            if (p != null && p.getProjectId() == selectedId) {
+                return p;
+            }
+        }
+
+        System.out.println("No project found with ID: " + selectedId + ". Please try again or enter -1 to cancel.");
+    }
+}
 
 } // end of UserInterface
