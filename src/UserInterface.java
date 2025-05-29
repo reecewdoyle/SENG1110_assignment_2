@@ -373,17 +373,7 @@ public class UserInterface {
         System.out.println("Selected Project: " + workProject.getProjectName());
 
         // Display tasks in the selected project
-        boolean hasTasks = false;
-        for (Task t : workProject.getTasks()) {
-            if (t != null) {
-                hasTasks = true;
-                System.out.println("- Task ID: " + t.getTaskId() + " | Desc: " + t.getDescription() + " | Completed: " + t.isCompleted());
-            }
-        }
-
-        if (!hasTasks) {
-            System.out.println("This project has no tasks to mark as completed.");
-        }
+        displayTasksForProject(workProject);
 
         // Prompt user to select a task by ID
         Task selectedTask = selectTaskById(workProject, scannerInput);
@@ -399,7 +389,6 @@ public class UserInterface {
             System.out.println("Task marked as completed.");
         }
 
-
     }
 
 // -------------------------------------------------------------------------
@@ -413,7 +402,43 @@ public class UserInterface {
  * User can enter -1 at the Task ID prompt to return to the menu.
  */
     private void removeTask() {
-        System.out.println("removeTask() not implemented yet.");
+        if (noProjectsExist()) {
+            System.out.println("There are no projects to remove a task from.");
+            return;
+        }
+
+        // Display existing projects
+        displayExistingProjects();
+        
+        // Select a project
+        Project workProject = selectProjectById(scannerInput);
+        if (workProject == null) {
+            System.out.println("Task removal cancelled.");
+            return;
+        }
+
+        // Display tasks in the project
+        displayTasksForProject(workProject);
+
+        // Prompt for the task to remove
+        Task taskToRemove = selectTaskById(workProject, scannerInput);
+        if (taskToRemove == null) {
+            System.out.println("Task removal cancelled.");
+            return;
+        }
+
+        // Remove the task by finding and nulling its slot
+        Task[] tasks = workProject.getTasks();
+        for (int i = 0; i < tasks.length; i++) {
+            if (tasks[i] != null && tasks[i].getTaskId() == taskToRemove.getTaskId()) {
+                tasks[i] = null;
+                System.out.println("Task ID " + taskToRemove.getTaskId() + " successfully removed.");
+                return;
+            }
+        }
+
+        // Shouldn't reach here, but fallback just in case
+        System.out.println("Unexpected error: Task could not be removed.");
     }
 
 // -------------------------------------------------------------------------
@@ -836,6 +861,37 @@ private Task selectTaskById(Project project, Scanner scannerInput) {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a number.");
         }
+    }
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD 11: Display Tasks for a Given Project
+// -------------------------------------------------------------------------
+
+/**
+ * Displays all tasks within a given project.
+ * Skips over any null task slots.
+ *
+ * @param project The project whose tasks should be displayed.
+ */
+private void displayTasksForProject(Project project) {
+    System.out.println("\nTasks in project: " + project.getProjectName());
+    boolean hasTasks = false;
+
+    for (Task t : project.getTasks()) {
+        if (t != null) {
+            hasTasks = true;
+            String status = t.isCompleted() ? "Completed" : "Incomplete";
+            System.out.println("- Task ID: " + t.getTaskId() +
+                               " | Desc: " + t.getDescription() +
+                               " | Type: " + t.getTaskType() +
+                               " | Duration: " + t.getTaskDuration() + "h" +
+                               " | Status: " + status);
+        }
+    }
+
+    if (!hasTasks) {
+        System.out.println("This project has no tasks.");
     }
 }
 
