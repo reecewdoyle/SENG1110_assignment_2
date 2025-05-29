@@ -568,15 +568,22 @@ public class UserInterface {
  * Report includes:
  * - Average duration of each task type (Admin, Support, Logistics) across all projects.
  * - A breakdown of task durations by individual project.
- *
- * Task types:
- * - A = Admin
- * - S = Support
- * - L = Logistics
  */
-
     private void displayProjectSummary() {
-        System.out.println("displayProjectSummary() not implemented yet.");
+        if (noProjectsExist()) {
+            System.out.println("No created tasks to report.");
+            return;
+        }
+
+        // Display combined averages across all projects
+        displayAverageDurationsAcrossAllProjects(projects);
+
+        // Display task breakdowns per individual project
+        for (Project p : projects) {
+            if (p != null) {
+                displayTaskDurationBreakdown(p);
+            }
+        }
     }
 // -------------------------------------------------------------------------
 // LOAD PROJECTS FROM FILE
