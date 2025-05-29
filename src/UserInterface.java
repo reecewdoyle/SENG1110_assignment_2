@@ -196,36 +196,27 @@ private void createProject() {
             System.out.println("\nNo projects exist to remove.");
             return;
         }
-        // Prompt for the ID of the project to remove
-        System.out.print("\nEnter the Project ID to remove (or -1 to cancel): ");
+        while (true) {
+            // Prompt for the ID of the project to remove
+            int projectIdToRemove = promptExistingProjectId(scannerInput);
 
-        int projectIdToRemove = -1;
-        if (scannerInput.hasNextInt()) {
-            projectIdToRemove = scannerInput.nextInt();
-            scannerInput.nextLine(); // clear newline
-        } else {
-            System.out.println("Invalid input. Returning to menu.");
-            scannerInput.next(); // clear invalid input
-            return;
-        }
-
-        if (projectIdToRemove == -1) {
-            System.out.println("Removal cancelled.");
-            return;
-        }
-
-        // Try to find and remove the project
-        for (int i = 0; i < projects.length; i++) {
-            if (projects[i] != null && projects[i].getProjectId() == projectIdToRemove) {
-                projects[i] = null;
-                System.out.println("Project ID " + projectIdToRemove + " successfully removed.");
+            if (projectIdToRemove == -1) {
+                System.out.println("Removal cancelled.");
                 return;
             }
+
+                    // Try to find and remove the project
+            for (int i = 0; i < projects.length; i++) {
+                if (projects[i] != null && projects[i].getProjectId() == projectIdToRemove) {
+                    projects[i] = null;
+                    System.out.println("Project ID " + projectIdToRemove + " successfully removed.");
+                    return;
+                }
+            }
+
+            // Loop back if no matching project was found
+            System.out.println("No project found with ID: " + projectIdToRemove + ". Please try again or enter -1 to cancel.");
         }
-
-        // if no matching project was found
-        System.out.println("No project found with ID: " + projectIdToRemove);
-
     }
 
 // -------------------------------------------------------------------------
@@ -468,6 +459,7 @@ private int promptValidProjectId(Scanner scannerInput) {
 /**
  * Prompts the user to enter a project ID for an existing project.
  * Accepts only numeric input and allows the user to enter -1 to cancel.
+ * Ensures the input is not empty and is a valid integer.
  * 
  * Loops until a valid integer is entered.
  * 
