@@ -451,7 +451,21 @@ public class UserInterface {
  * For each project, tasks are listed with ID, description, type, duration, and status.
  */
     private void displayProjectDetails() {
-        System.out.println("displayProjectDetails() not implemented yet.");
+        if (noProjectsExist()) {
+            System.out.println("\nThere are no saved projects to display.");
+            return;
+        }
+
+        for (Project p : projects) {
+            if (p != null) {
+                System.out.println("\n---------------------------------------------------");
+                System.out.println("Project ID: " + p.getProjectId());
+                System.out.println("Project Name: " + p.getProjectName());
+                System.out.println("Project Type: " + p.getProjectType());
+                displayTasksForProject(p);
+            }
+        }
+        System.out.println("---------------------------------------------------\n");
     }
 // -------------------------------------------------------------------------
 // DISPLAY COMPLETED TASKS
