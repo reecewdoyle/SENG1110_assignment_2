@@ -7,23 +7,23 @@ The `UserInterface` class in Assignment 1 got the job done, but it ended up pret
 
 Progress below is tracked by menu option:
 
-- [ ] `1. Create a new project` - Prompt for project details, store in first available slot
-- [ ] `2. Remove a project` - Find by ID, confirm, null the slot
-- [ ] `3. Add a task to a project` - Prompt for task details, validate and add via `addTask()`
-- [ ] `4. Mark a task as completed` - Find task by ID and update completed status
-- [ ] `5. Remove a task from a project` - Locate and null out the matching task slot
-- [ ] `6. Display all project details` - Loop through projects, print info + all tasks
-- [ ] `7. Display completed tasks` - Filter and show only completed tasks across all projects
-- [ ] `8. Filter tasks by type` - Prompt for A/L/S, display matching tasks only
-- [ ] `9. Display project summary` - Show ID, name, type, task count, total duration, etc.
+- [x] `1. Create a new project` - Prompt for project details, store in first available slot
+- [x] `2. Remove a project` - Find by ID, confirm, null the slot
+- [x] `3. Add a task to a project` - Prompt for task details, validate and add via `addTask()`
+- [x] `4. Mark a task as completed` - Find task by ID and update completed status
+- [x] `5. Remove a task from a project` - Locate and null out the matching task slot
+- [x] `6. Display all project details` - Loop through projects, print info + all tasks
+- [x] `7. Display completed tasks` - Filter and show only completed tasks across all projects
+- [x] `8. Filter tasks by type` - Prompt for A/L/S, display matching tasks only
+- [x] `9. Display project summary` - Show ID, name, type, task count, total duration, etc.
 - [ ] `10. Load from file` - Parse ProjectData.txt into structured objects
 - [ ] `11. Save to file` - Write all data in assignment format to ProjectData.txt
-- [ ] `-1. Exit` - Terminate program cleanly with goodbye message
+- [x] `-1. Exit` - Terminate program cleanly with goodbye message
 
 ## Core Structure
-- [ ] Created fresh repo and folder structure
-- [ ] All `.java` files inside `src/`
-- [ ] `.gitignore` blocks `.class` files and build artifacts
+- [x] Created fresh repo and folder structure
+- [x] All `.java` files inside `src/`
+- [x] `.gitignore` blocks `.class` files and build artifacts
 
 ## Project & Task Management
 - [ ] `Project[]` stores up to 10 projects
@@ -32,9 +32,9 @@ Progress below is tracked by menu option:
 - [ ] Auto-generate random unique ID if duplicate is entered
 
 ## Helper Methods & Refactoring
-- [ ] Refactored long blocks of code into clear helper methods
-- [ ] Examples: `getProjectById()`, `addTaskToProject()`, `displayTasks()`, etc.
-- [ ] Avoided deeply nested code, used early returns and clean loops
+- [x] Refactored long blocks of code into clear helper methods
+- [x] Examples: `getProjectById()`, `addTaskToProject()`, `displayTasks()`, etc.
+- [x] Avoided deeply nested code, used early returns and clean loops
 
 ## File I/O
 - [ ] Implemented `loadFromFile(String filename)` using `Scanner`
