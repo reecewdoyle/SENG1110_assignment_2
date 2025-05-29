@@ -63,3 +63,58 @@ Progress below is tracked by menu option:
 - [ ] Verified duplicate ID logic with fallback random generation
 - [ ] Tested file load/save with provided `ProjectData.txt`
 - [ ] Checked for all expected error messages and recovery flows
+
+
+## Assignment 2 Specifications
+### Task Class
+### Attributes
+- [x] taskId (int)
+- [x] description (String)
+- [x] completed (boolean)
+- [x] (char) (A,S,L)
+- [x] taskDuration (int)
+
+### Project Class
+### Attributes
+- [x] projectId (int)
+- [x] projectName (String)
+- [x] task (Task[]) An array of Task objects. Size determined by project type
+- [x] projectType (String) (Small, Medium, Large)
+
+### User Interface Class
+### Attributes
+- [x] Projects[] - Array with a max of 10 projects
+- [x] scannerInput (Scanner) - to handle euser input
+
+### Functionality Requirements
+### 
+
+## Assignment 2 Feature Checklist
+
+### Project Management
+- [x] Supports **up to 10 projects** in the `projects` array.
+- [x] Displays an **error if trying to create a project when full**.
+- [x] Ensures **unique `projectId`** across all projects.
+- [ ] If a **duplicate `projectId`** is entered, a **random unique ID** is assigned automatically.
+- [x] Accepts and normalises **case-insensitive `projectType`** input (Small, Medium, Large).
+
+### Task Management
+- [x] Adds tasks to a specific project's **`tasks` array**.
+- [x] Ensures **unique `taskId` within the project**.
+- [ ] If a **duplicate `taskId`** is entered, a **random unique ID** is assigned automatically.
+- [x] Accepts and normalises **case-insensitive `taskType`** input (A, S, L).
+- [x] Prevents adding tasks **if the project is at max capacity** (based on type).
+
+### Deletion
+- [x] Allows **removing a project by `projectId`**, with error handling for invalid IDs.
+- [x] Allows **removing tasks from a project’s `tasks` array** by ID.
+
+### Display Features
+- [x] **Displays all project details** (ID, name, type, tasks).
+- [x] **Displays completed tasks** for a selected project.
+- [x] **Filters tasks by type** (A, S, L) across all projects.
+
+### Task Duration Summary
+- [x] Displays **average duration for each task type** across all projects.
+- [x] Displays **task duration breakdown per individual project**.
+- [x] Shows appropriate **messages if no projects or tasks exist**.

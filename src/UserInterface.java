@@ -2,6 +2,7 @@
  * UserInterface class handles all user interactions for the Project Management System
  * Provides a menu-driven interface for managing projects and tasks
  */
+import java.util.Random;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -10,7 +11,7 @@ public class UserInterface {
     // Instance Variables
     // -------------------------------------------------------------------------
     
-    private Project[] projects = new Project[3];
+    private Project[] projects = new Project[10];
     private Scanner scannerInput;
     
     // -------------------------------------------------------------------------
@@ -131,8 +132,16 @@ public class UserInterface {
 
         // Get validated project ID
         int id = promptValidProjectId(scannerInput);
+
+        // Check for duplicate ID and generate new one if necessary
+        if (isProjectIdTaken(id)) {
+            System.out.println("Project ID already exists. Generating a new unique ID...");
+            id = generateUniqueProjectId(); 
+        }
+
         p.setProjectId(id);
-        System.out.println("\nProject ID " + p.getProjectId());
+        System.out.println("\nAssigned Project ID: " + p.getProjectId());
+
         
         // ----------------- Project Name Input -----------------
         System.out.print("\nEnter Project Name: ");
@@ -258,9 +267,13 @@ public class UserInterface {
             return;
         }
 
-        // Task ID input and validation
         int taskId = promptValidTaskId(scannerInput);
 
+        // Check if the ID is already taken within the selected project
+        if (isTaskIdTakenInProject(workProject, taskId)) {
+            System.out.println("Task ID already exists in this project. Generating a new unique ID...");
+            taskId = generateUniqueTaskId(workProject);
+}
         // Task description input
         String description;
         do {
@@ -1097,6 +1110,80 @@ private void displayTaskDurationBreakdown(Project p) {
     } else {
         System.out.println("* No logistics tasks found.\n");
     }
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD 14: Generate Unique Project ID
+// -------------------------------------------------------------------------
+
+/**
+ * Generates a random unique project ID between 1 and 999 that is not already
+ * used by any existing project in the system.
+ *
+ * @return A unique project ID not currently used.
+ */
+private int generateUniqueProjectId() {
+    Random rand = new Random();
+    int id;
+
+    do {
+        id = rand.nextInt(999) + 1; // generates number between 1 and 999
+    } while (isProjectIdTaken(id));
+
+    return id;
+}
+
+/**
+ * Checks if the given project ID is already used by an existing project.
+ *
+ * @param id The project ID to check.
+ * @return true if the ID is taken, false otherwise.
+ */
+private boolean isProjectIdTaken(int id) {
+    for (Project p : projects) {
+        if (p != null && p.getProjectId() == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// -------------------------------------------------------------------------
+// HELPER METHOD 15: Generate Unique Task ID Within a Project
+// -------------------------------------------------------------------------
+
+/**
+ * Generates a random unique task ID between 1 and 9 that is not already
+ * used by any existing task in the given project.
+ *
+ * @param project The project to generate a unique task ID for.
+ * @return A unique task ID not currently used in that project.
+ */
+private int generateUniqueTaskId(Project project) {
+    Random rand = new Random();
+    int id;
+
+    do {
+        id = rand.nextInt(9) + 1; // generates number between 1 and 9
+    } while (isTaskIdTakenInProject(project, id));
+
+    return id;
+}
+
+/**
+ * Checks if the given task ID already exists in the given project.
+ *
+ * @param project The project to check.
+ * @param id The task ID to check.
+ * @return true if the ID is taken, false otherwise.
+ */
+private boolean isTaskIdTakenInProject(Project project, int id) {
+    for (Task t : project.getTasks()) {
+        if (t != null && t.getTaskId() == id) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // end of UserInterface
