@@ -634,96 +634,96 @@ public class UserInterface {
         }
     }
 // -------------------------------------------------------------------------
-// LOAD PROJECTS FROM FILE
+// LOAD PROJECTS FROM FILE (ROBUST VERSION)
 // -------------------------------------------------------------------------
 
 /**
- * Loads projects and tasks from an external text file (e.g., ProjectData.txt).
+ * Loads projects and tasks from an external file (e.g., ProjectData.txt).
+ * Accepts mixed, out-of-order, or malformed input with graceful error handling.
  *
- * Expected file format:
- * - Project line: projectId,projectName,projectType
- * - Task lines (follow immediately): taskId,description,taskType,duration,completed
- * - Repeats for each project
- *
- * This method:
- * - Parses and reconstructs Project and Task objects from the file
- * - Populates the internal project array
- * - Skips invalid entries and handles file-related exceptions
+ * Expected project line format: ID,Name,Type
+ * Expected task line format: ID,Type,Duration,Completed
  */
-    private void loadFromFile() {
-        System.out.print("Enter filename to load from (e.g., ProjectData.txt): ");
-        String filename = scannerInput.nextLine().trim();
+private void loadFromFile() {
+    System.out.print("Enter filename to load from (e.g., ProjectData.txt): ");
+    String filename = scannerInput.nextLine().trim();
 
-        try (Scanner fileScanner = new Scanner(new File(filename))) {
-            Project[] loadedProjects = new Project[10];
-            int projectIndex = -1;
+    try (Scanner fileScanner = new Scanner(new File(filename))) {
+        Project[] loadedProjects = new Project[10];
+        int projectIndex = -1;
+        Project currentProject = null;
 
-            while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine().trim();
-                String[] tokens = line.split(",");
+        while (fileScanner.hasNextLine()) {
+            String line = fileScanner.nextLine().trim();
+            String[] tokens = line.split(",");
 
+            // Skip blank lines
+            if (tokens.length == 0 || line.isEmpty()) continue;
+
+            try {
                 if (tokens.length == 3) {
-                    // Project line
-                    if (projectIndex == 9) {
-                        System.out.println("Maximum project limit reached. Skipping additional projects.");
-                        break;
-                    }
-
-                    int id = Integer.parseInt(tokens[0]);
-                    String name = tokens[1];
-                    String type = tokens[2];
-
-                    Project p = new Project();
-                    p.setProjectId(id);
-                    p.setProjectName(name);
-                    p.setProjectType(type);
-                    loadedProjects[++projectIndex] = p;
-
-                } else if (tokens.length == 5 && projectIndex >= 0) {
-                    // Task line
-                    Project current = loadedProjects[projectIndex];
-
-                    if (!projectHasRoomForTask(current)) {
-                        System.out.println("Project ID " + current.getProjectId() + " has no room for more tasks. Skipping task.");
+                    // Project line: ID, Name, Type
+                    if (projectIndex >= 9) {
+                        System.out.println("[WARNING] Max project limit reached. Skipping extra project: " + line);
                         continue;
                     }
 
-                    int taskId = Integer.parseInt(tokens[0]);
-                    String desc = tokens[1];
-                    char type = tokens[2].charAt(0);
-                    int duration = Integer.parseInt(tokens[3]);
-                    boolean completed = Boolean.parseBoolean(tokens[4]);
+                    int projectId = Integer.parseInt(tokens[0].trim());
+                    String name = tokens[1].trim();
+                    String type = tokens[2].trim();
 
-                    Task t = new Task();
-                    t.setTaskId(taskId);
-                    t.setDescription(desc);
-                    t.setTaskType(type);
-                    t.setTaskDuration(duration);
-                    t.setCompleted(completed);
+                    currentProject = new Project();
+                    currentProject.setProjectId(projectId);
+                    currentProject.setProjectName(name);
+                    currentProject.setProjectType(type);
+                    loadedProjects[++projectIndex] = currentProject;
 
-                    for (int i = 0; i < current.getTasks().length; i++) {
-                        if (current.getTasks()[i] == null) {
-                            current.getTasks()[i] = t;
+                } else if (tokens.length == 4 && currentProject != null) {
+                    // Task line: ID, Type, Duration, Completed
+                    if (!projectHasRoomForTask(currentProject)) {
+                        System.out.println("[WARNING] Project ID " + currentProject.getProjectId() + " full. Skipping task: " + line);
+                        continue;
+                    }
+
+                    int taskId = Integer.parseInt(tokens[0].trim());
+                    char taskType = tokens[1].trim().toUpperCase().charAt(0);
+                    int duration = Integer.parseInt(tokens[2].trim());
+                    boolean completed = Boolean.parseBoolean(tokens[3].trim().toLowerCase());
+
+                    if (taskType != 'A' && taskType != 'S' && taskType != 'L') {
+                        System.out.println("[WARNING] Invalid task type: " + taskType + ". Skipping: " + line);
+                        continue;
+                    }
+
+                    Task task = new Task(taskId, "", taskType, duration, completed);
+
+                    for (int i = 0; i < currentProject.getTasks().length; i++) {
+                        if (currentProject.getTasks()[i] == null) {
+                            currentProject.getTasks()[i] = task;
                             break;
                         }
                     }
+
+                } else {
+                    System.out.println("[WARNING] Malformed line or out-of-place task: " + line);
                 }
+
+            } catch (Exception ex) {
+                System.out.println("[ERROR] Failed to parse line: " + line + " — " + ex.getMessage());
             }
-
-            // Load valid projects into the main array
-            for (int i = 0; i < projects.length; i++) {
-                projects[i] = i < loadedProjects.length ? loadedProjects[i] : null;
-            }
-
-            System.out.println("Projects loaded successfully.");
-
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found: " + filename);
-        } catch (Exception e) {
-            System.out.println("Error reading from file: " + e.getMessage());
         }
-    }
 
+        // Load parsed projects into main array
+        for (int i = 0; i < projects.length; i++) {
+            projects[i] = (i <= projectIndex) ? loadedProjects[i] : null;
+        }
+
+        System.out.println("Projects loaded successfully.");
+
+    } catch (FileNotFoundException e) {
+        System.out.println("[ERROR] File not found: " + filename);
+    }
+}
 // -------------------------------------------------------------------------
 // SAVE PROJECTS TO FILE
 // -------------------------------------------------------------------------

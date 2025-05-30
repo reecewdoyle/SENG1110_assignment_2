@@ -3,21 +3,33 @@
  * Contains attributes for task identification, description, completion status, type, and duration
  */
 public class Task {
-
-    // Unique identifier for the task (1-9)
     private int taskId;
-
-    // Description of the task
     private String description;
-
-    // Whether the task has been completed
     private boolean completed;
-
-    // Task type: A = Admin, S = Support, L = Logistics
     private char taskType;
-
-    // Duration of the task in hours
     private int taskDuration;
+
+    /**
+     * Full constructor to initialize all task attributes.
+     *
+     * @param taskId Unique identifier for the task
+     * @param description Description of the task
+     * @param taskType Task type: A = Admin, S = Support, L = Logistics
+     * @param taskDuration Duration in hours
+     * @param completed Completion status (true if completed)
+     */
+    public Task(int taskId, String description, char taskType, int taskDuration, boolean completed) {
+        this.taskId = taskId;
+        this.description = description;
+        this.taskType = taskType;
+        this.taskDuration = taskDuration;
+        this.completed = completed;
+    }
+
+    public Task() {
+        // Default constructor for flexibility
+    }
+
 
     /**
      * Gets the task ID.
