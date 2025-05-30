@@ -78,42 +78,42 @@ public class UserInterface {
      * Prevents crashing from invalid or empty input
      * @return The menu option selected by the user.
      */
-        private int displayMenu() {
-          System.out.println("\n========== PROJECT MANAGEMENT SYSTEM ==========");
-          System.out.println("1. Create a new project");
-          System.out.println("2. Remove a project");
-          System.out.println("3. Add a task to a project");
-          System.out.println("4. Mark a task as completed");
-          System.out.println("5. Remove a task from a project");
-          System.out.println("6. Display all projects details");
-          System.out.println("7. Display completed tasks");
-          System.out.println("8. Filter tasks by type");
-          System.out.println("9. Display project summary");
-          System.out.println("10. Load from file");
-          System.out.println("11. Save to file");
-          System.out.println("-1 Exit");
-          System.out.print("Enter your choice: ");
-            
-      if (scannerInput.hasNextLine()) {
-          String input = scannerInput.nextLine().trim();
-  
-          if (input.isEmpty()) {
-              System.out.println("Error!");
-              return 0;
-          }
-  
-          boolean allDigits = input.matches("-?\\d+");
-          if (allDigits) {
-              return Integer.parseInt(input);
-          } else {
-              System.out.println("Error!");
-              return 0;
-          }
-      }
-  
-      // fallback
-      return 0;
-  }
+    private int displayMenu() {
+        System.out.println("\n========== PROJECT MANAGEMENT SYSTEM ==========");
+        System.out.println("1. Create a new project");
+        System.out.println("2. Remove a project");
+        System.out.println("3. Add a task to a project");
+        System.out.println("4. Mark a task as completed");
+        System.out.println("5. Remove a task from a project");
+        System.out.println("6. Display all projects details");
+        System.out.println("7. Display completed tasks");
+        System.out.println("8. Filter tasks by type");
+        System.out.println("9. Display project summary");
+        System.out.println("10. Load from file");
+        System.out.println("11. Save to file");
+        System.out.println("-1 Exit");
+        System.out.print("Enter your choice: ");
+        
+        if (scannerInput.hasNextLine()) {
+            String input = scannerInput.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Error!");
+                return 0;
+            }
+
+            boolean allDigits = input.matches("-?\\d+");
+            if (allDigits) {
+                return Integer.parseInt(input);
+            } else {
+                System.out.println("Error!");
+                return 0;
+            }
+        }
+
+        // fallback
+        return 0;
+    }
     
 // -------------------------------------------------------------------------
 // CREATE NEW PROJECT
@@ -631,7 +631,7 @@ public class UserInterface {
         }
     }
 // -------------------------------------------------------------------------
-// LOAD PROJECTS FROM FILE (ROBUST VERSION)
+// LOAD PROJECTS FROM FILE
 // -------------------------------------------------------------------------
 
 /**
@@ -642,46 +642,50 @@ public class UserInterface {
  * Expected task line format: ID,Type,Duration,Completed
  */
 private void loadFromFile() {
+    // Load file
     System.out.print("Enter filename to load from (e.g., ProjectData.txt): ");
     String filename = scannerInput.nextLine().trim();
 
+    // Scanner to read file
     try (Scanner fileScanner = new Scanner(new File(filename))) {
         Project[] loadedProjects = new Project[10];
         int projectIndex = -1;
         Project currentProject = null;
 
         while (fileScanner.hasNextLine()) {
+            // Read each line and trime whitespace
             String line = fileScanner.nextLine().trim();
+            // Splits line into tokens at the commas
             String[] tokens = line.split(",");
 
             // Skip blank lines
             if (tokens.length == 0 || line.isEmpty()) continue;
 
             try {
+                // Lines with only 3 tokens are Projects
                 if (tokens.length == 3) {
-                    // Project line: ID, Name, Type
-                    // if (projectIndex >= 9) {
-                    //     System.out.println("[WARNING] Max project limit reached. Skipping extra project: " + line);
-                    //     continue;
-                    // }
-
+                    // Checks the projectID is valid
                     int projectId = Integer.parseInt(tokens[0].trim());
                     if (projectId < 1 || projectId > 999) {
                         System.out.println("[WARNING] Invalid project ID: " + projectId + ". Skipping line: " + line);
                         continue;
                     }
 
+
                     String name = tokens[1].trim();
                     String type = tokens[2].trim();
 
+                    // Limits to 10 projects
                     if (++projectIndex >= 10) {
                         System.out.println("[WARNING] Max project limit reached. Skipping extra project: " + line);
                     }
 
+                    // Validate project type
                     if (!type.equals("Small") && !type.equals("Medium") && !type.equals("Large")) {
                         System.out.println("[WARNING] Invalid project type: " + type + ". Skipping line: " + line);
                         continue;
                     }
+
 
                     currentProject = new Project();
                     currentProject.setProjectId(projectId);
@@ -689,8 +693,10 @@ private void loadFromFile() {
                     currentProject.setProjectType(type);
                     loadedProjects[projectIndex] = currentProject;
 
+
+                    // If there are 5 tokens, it's a task, and it belongs to the most recent project above.
                 } else if (tokens.length == 5 && currentProject != null) {
-                    // Task line: ID, Type, Duration, Completed
+                    // Task line: ID, Description, Type, Duration, Completed
                     if (!projectHasRoomForTask(currentProject)) {
                         System.out.println("[WARNING] Project ID " + currentProject.getProjectId() + " full. Skipping task: " + line);
                         continue;
@@ -702,21 +708,25 @@ private void loadFromFile() {
                     int duration = Integer.parseInt(tokens[3].trim());
                     boolean completed = Boolean.parseBoolean(tokens[4].trim().toLowerCase());
                     
+                    // Checks for empty description
                     if (description.isEmpty()) {
                         System.out.println("[WARNING] Task description is empty: Skipping line: " +line);
                         continue;
                     }
 
+                    // Checks for valid task type
                     if (taskType != 'A' && taskType != 'S' && taskType != 'L') {
                         System.out.println("[WARNING] Invalid task type: " + taskType + ". Skipping: " + line);
                         continue;
                     }
 
+                    // Checks for valid duration
                     if (duration <= 0 || duration > 100) {
                         System.out.println("[WARNING] Invalid task duration : " + duration + ". Skipping: " + line);
                         continue;
                     }
 
+                    // Checks for completed boolean
                     if (!projectHasRoomForTask(currentProject)) {
                         System.out.println("[WARNING] Project ID " + currentProject.getProjectId() + " full. Skipping task: " +line);
                         continue;
@@ -752,6 +762,7 @@ private void loadFromFile() {
 
         System.out.println("Projects loaded successfully.");
 
+    // Catch for no file found
     } catch (FileNotFoundException e) {
         System.out.println("[ERROR] File not found: " + filename);
     }
