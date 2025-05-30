@@ -278,6 +278,7 @@ public class UserInterface {
             return;
         }
 
+        
         // Get intial task ID from user
         int taskId = promptValidTaskId(scannerInput);
 
