@@ -37,17 +37,14 @@ public class UserInterface {
      * Initialises projects and scanner, loads seed data, and handles user menu input.
      */
     public void run() {
-    //   project1 = null;
-    //   project2 = null;
-    //   project3 = null;
     for (int i = 0; i < projects.length; i++) {
         projects[i] = null;
     }
 
 
-      scannerInput = new Scanner(System.in);
+    scannerInput = new Scanner(System.in);
 
-      int choice;
+    int choice;
 
         // Loop until user selects -1 to exit
         do {
@@ -68,7 +65,7 @@ public class UserInterface {
                     System.out.println("Thank you for using Project Managment System. Goodbye!"); break;
                 default: 
                     System.out.println("Invalid choice. Please try again.");
-            }
+                }
         } while (choice != -1);
     }
 
@@ -92,6 +89,8 @@ public class UserInterface {
           System.out.println("7. Display completed tasks");
           System.out.println("8. Filter tasks by type");
           System.out.println("9. Display project summary");
+          System.out.println("10. Load from file");
+          System.out.println("11. Save to file");
           System.out.println("-1 Exit");
           System.out.print("Enter your choice: ");
             
@@ -411,7 +410,6 @@ public class UserInterface {
 
         // Display existing projects
         displayExistingProjects();
-
         // Prompt user to select a project by ID
         Project workProject = selectProjectById(scannerInput);
         if (workProject == null) {
@@ -1313,5 +1311,6 @@ private boolean isTaskIdTakenInProject(Project project, int id) {
     }
     return false;
 }
+
 
 } // end of UserInterface

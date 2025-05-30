@@ -18,7 +18,7 @@ public class Task {
 
     // Duration of the task in hours
     private int taskDuration;
-    
+
     /**
      * Gets the task ID.
      * @return taskId as int
