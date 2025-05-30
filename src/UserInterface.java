@@ -138,10 +138,16 @@ public class UserInterface {
         int id = promptValidProjectId(scannerInput);
 
         // Check for duplicate ID and generate new one if necessary
-        if (isProjectIdTaken(id)) {
-            System.out.println("Project ID already exists. Generating a new unique ID...");
-            id = generateUniqueProjectId(); 
+        while (isProjectIdTaken(id)) {
+            System.out.println("Project ID " + " already exists. Generating a new unique ID...");
+            id = generateUniqueProjectId();
+            System.out.println("[DEBUG] Generated unique fallback Project ID: " + id);
+            
         }
+        // if (isProjectIdTaken(id)) {
+        //     System.out.println("Project ID already exists. Generating a new unique ID...");
+        //     id = generateUniqueProjectId(); 
+        // }
 
         p.setProjectId(id);
         System.out.println("\nAssigned Project ID: " + p.getProjectId());
@@ -151,7 +157,7 @@ public class UserInterface {
         System.out.print("\nEnter Project Name: ");
         String projectName = scannerInput.nextLine().trim();
         while (projectName.isEmpty()) {
-            System.out.println("Project name cannot be empty. Please enter a valid name:");
+            System.out.print("Project name cannot be empty. \nPlease enter a valid name: ");
             projectName = scannerInput.nextLine().trim();
         }
         p.setProjectName(projectName);
@@ -274,10 +280,15 @@ public class UserInterface {
         int taskId = promptValidTaskId(scannerInput);
 
         // Check if the ID is already taken within the selected project
-        if (isTaskIdTakenInProject(workProject, taskId)) {
-            System.out.println("Task ID already exists in this project. Generating a new unique ID...");
+        while (isTaskIdTakenInProject(workProject, taskId)) {
+            System.out.println("Task ID " + " already exists in this project. Generating a new unique ID...");
             taskId = generateUniqueTaskId(workProject);
-}
+        }
+        // if (isTaskIdTakenInProject(workProject, taskId)) {
+        //     System.out.println("Task ID already exists in this project. Generating a new unique ID...");
+        //     taskId = generateUniqueTaskId(workProject);
+        // }
+
         // Task description input
         String description;
         do {
@@ -793,31 +804,39 @@ private int promptValidProjectId(Scanner scannerInput) {
     
     do {
         System.out.print("\nEnter Project ID (1-999): ");
-        
-        if (scannerInput.hasNextInt()) {
-            id = scannerInput.nextInt();
-            scannerInput.nextLine(); // clear newline
-            
-            if (id >= 1 && id <= 999) {
-                boolean duplicate = false;
-                for (Project p : projects) {
-                    if (p != null && p.getProjectId() == id) {
-                        duplicate = true;
-                        break;
-                    }
-                }
-                if (duplicate) {
-                    System.out.println("Project ID already exists.");
-                } else {
-                    validProjectId = true;
-                }
-            } else {
-                System.out.println("Project ID must be between 1 and 999.");
-            }
-        } else {
-            System.out.println("Invalid input. Please enter a number between 1 and 999.");
-            scannerInput.next(); // clear invalid token
+        String input = scannerInput.nextLine().trim();
+
+        if (input.isEmpty()) {
+            System.out.println("Input cannot be empty");
+            continue;
         }
+        
+        try {
+            id = Integer.parseInt(input);
+
+            if (id >= 1 && id <= 999) {
+                validProjectId = true;
+            } else {
+                System.out.println("Project ID must be a number between 1 and 999.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number between 1 and 999.");
+        }
+        // if (scannerInput.hasNextInt()) {
+        //     id = scannerInput.nextInt();
+        //     scannerInput.nextLine(); // clear newline
+
+        //     if (id >= 1 && id <= 999) {
+        //         validProjectId = true;
+        //     } else {
+        //         System.out.println("Project ID must be a number between 1 and 999.");
+        //         scannerInput.next(); // clear invalid token
+        //     }
+
+        // } else {
+        //     System.out.println("Invalid input. Please enter a number between 1 and 999.");
+        //     scannerInput.nextLine(); // clear invalid token
+        // }
         
     } while (!validProjectId);
     
@@ -1227,6 +1246,8 @@ private int generateUniqueProjectId() {
     do {
         id = rand.nextInt(999) + 1; // generates number between 1 and 999
     } while (isProjectIdTaken(id));
+
+    System.out.println("[DEBUG] Generated unique fallback Project ID: " + id);
 
     return id;
 }
