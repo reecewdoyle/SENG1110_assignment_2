@@ -258,7 +258,7 @@ public class UserInterface {
         displayExistingProjects();
 
         // Prompt user to select a project by ID
-        Project workProject = selectProjectById(scannerInput);
+        Project workProject = selectProjectById(scannerInput, "Enter the Project ID to mark a task as completed (or -1 to cancel): ");
         if (workProject == null) {
             System.out.println("Task creation cancelled.");
             return;
@@ -351,22 +351,6 @@ public class UserInterface {
 
         } while (!validDuration);
 
-        // do {
-        //     System.out.print("\nEnter task duration in hours (positive whole number): ");
-        //     if (scannerInput.hasNextInt()) {
-        //         duration = scannerInput.nextInt();
-        //         scannerInput.nextInt();
-
-        //         if (duration > 0) {
-        //             validDuration = true;
-        //         } else {
-        //             System.out.println("Duration must be greater than 0.");
-        //         }
-        //     } else {
-        //         System.out.println("Invalid input. Please enter the number of hours.");
-        //         scannerInput.next();
-        //     }
-        // } while (!validDuration);
 
         // Create and assign task
         Task newTask = new Task();
@@ -411,7 +395,7 @@ public class UserInterface {
         // Display existing projects
         displayExistingProjects();
         // Prompt user to select a project by ID
-        Project workProject = selectProjectById(scannerInput);
+        Project workProject = selectProjectById(scannerInput, "Enter the Project ID to mark a task as completed (or -1 to cancel): ");
         if (workProject == null) {
             System.out.println("Task creation cancelled.");
             return;
@@ -459,7 +443,7 @@ public class UserInterface {
         displayExistingProjects();
         
         // Select a project
-        Project workProject = selectProjectById(scannerInput);
+        Project workProject = selectProjectById(scannerInput, "Enter the Project ID to mark a task as completed (or -1 to cancel): ");
         if (workProject == null) {
             System.out.println("Task removal cancelled.");
             return;
@@ -467,6 +451,19 @@ public class UserInterface {
 
         // Display tasks in the project
         displayTasksForProject(workProject);
+
+        boolean hasTasks = false;
+        for (Task t :  workProject.getTasks()) {
+            if (t != null) {
+                hasTasks = true;
+                break;
+            }
+        }
+
+        if (!hasTasks) {
+            System.out.println("There are no tasks to remove in this project.");
+            return;
+        }
 
         // Prompt for the task to remove
         Task taskToRemove = selectTaskById(workProject, scannerInput);
@@ -531,16 +528,16 @@ public class UserInterface {
         }
 
         displayExistingProjects();
-        Project selectedProject = selectProjectById(scannerInput);
-        if (selectedProject == null) {
+        Project workProject = selectProjectById(scannerInput, "Enter the Project ID to mark a task as completed (or -1 to cancel): ");
+        if (workProject == null) {
             System.out.println("Returning to main menu...");
             return;
         }
 
-        System.out.println("\nCompleted Tasks in Project: " + selectedProject.getProjectName());
+        System.out.println("\nCompleted Tasks in Project: " + workProject.getProjectName());
         boolean foundTask = false;
 
-        for (Task t : selectedProject.getTasks()) {
+        for (Task t : workProject.getTasks()) {
             if (t != null && t.isCompleted()) {
                 System.out.println("* Task ID: " + t.getTaskId()
                     + ", Description: " + t.getDescription()
@@ -743,8 +740,8 @@ private void loadFromFile() {
                     System.out.println("[WARNING] Malformed line or out-of-place task: " + line);
                 }
 
-            } catch (Exception ex) {
-                System.out.println("[ERROR] Failed to parse line: " + line + " — " + ex.getMessage());
+            } catch (Exception e) {
+                System.out.println("[ERROR] Failed to parse line: " + line + " — " + e.getMessage());
             }
         }
 
@@ -888,7 +885,7 @@ private int promptValidProjectId(Scanner scannerInput, boolean allowCancel) {
 }
 
 // -------------------------------------------------------------------------
-// HELPER METHOD 4: Prompt for Existing Project ID
+// HELPER METHOD 4: Prompt for Existing Project ID 
 // -------------------------------------------------------------------------
 
 /**
@@ -899,14 +896,15 @@ private int promptValidProjectId(Scanner scannerInput, boolean allowCancel) {
  * Loops until a valid integer is entered.
  * 
  * @param scannerInput The Scanner object used for reading user input.
- * @return A valid integar project ID, or -1 if the user chooses to cancel. 
-*/
-private int promptExistingProjectId(Scanner scannerInput) {
+ * @param promptLabel The custom prompt message to display to the user.
+ * @return A valid integer project ID, or -1 if the user chooses to cancel. 
+ */
+private int promptExistingProjectId(Scanner scannerInput, String promptLabel) {
     int projectId = -1;
     boolean validInput = false;
 
     do {
-        System.out.print("\nEnter the Project ID to remove (or -1 to cancel): ");
+        System.out.print("\n" + promptLabel);
 
         if (scannerInput.hasNextLine()) {
             String input = scannerInput.nextLine().trim();
@@ -927,7 +925,6 @@ private int promptExistingProjectId(Scanner scannerInput) {
 
     return projectId;
 }
-
 // -------------------------------------------------------------------------
 // HELPER METHOD 5: Display Existing Projects
 // -------------------------------------------------------------------------
@@ -1050,7 +1047,7 @@ private int promptValidTaskId(Scanner scannerInput) {
 
 
 // -------------------------------------------------------------------------
-// HELPER METHOD 9: Prompt and Return Valid Project Object by ID
+// HELPER METHOD 9: Prompt and Return Valid Project Object by ID (Custom Prompt)
 // -------------------------------------------------------------------------
 
 /**
@@ -1058,11 +1055,12 @@ private int promptValidTaskId(Scanner scannerInput) {
  * Loops until a valid project is selected or the user cancels by entering -1.
  *
  * @param scannerInput Scanner object to read user input
+ * @param promptLabel Custom message to display for the prompt
  * @return The selected Project object, or null if cancelled
  */
-private Project selectProjectById(Scanner scannerInput) {
+private Project selectProjectById(Scanner scannerInput, String promptLabel) {
     while (true) {
-        int selectedId = promptExistingProjectId(scannerInput);
+        int selectedId = promptExistingProjectId(scannerInput, promptLabel);
 
         if (selectedId == -1) {
             return null;  // user cancelled

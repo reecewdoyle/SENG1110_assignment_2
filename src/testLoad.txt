@@ -1,0 +1,14 @@
+301,Admin Project,Large
+1,Review reports,A,10,true
+2,Prepare meeting,A,20,false
+3,Update calendar,A,30,true
+
+302,Support Project,Large
+4,Helpdesk call,S,15,true
+5,Troubleshoot email,S,25,false
+6,Reset password,S,35,true
+
+303,Logistics Project,Large
+7,Ship equipment,L,12,true
+8,Book travel,L,24,false
+9,Manage inventory,L,36,true
