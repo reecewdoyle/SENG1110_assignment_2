@@ -39,61 +39,36 @@ I probably went a bit overboard with helper methods and ended up creating more t
 ## 📸 Program Demonstration
 
 
-
-
-### 🧭 Main Menu  
-![Main Menu](./screenshots/0menu.png)
-
-
-### 🆕 Create Project  
-![Create Project](./screenshots/1createProject.png)
-
-
-### ❌ Remove Project  
-![Remove Project](./screenshots/2removeProject.png)
-
-
-### ➕ Add Task  
-![Add Task](./screenshots/3addTask.png)
-
-
-### ✅ Mark Task as Completed  
-![Mark Completed](./screenshots/4markComplete.png)
-
-
-### 🗑️ Remove Task  
-![Remove Task](./screenshots/5removeTask.png)
-
-
-### 📋 Display All Projects  
-![Display Projects](./screenshots/6displayAllProjects.png)
-
-
-### 📌 Display Completed Tasks  
-![Completed Tasks](./screenshots/7completedTasks.png)
-
-
-### 🔍 Filter Tasks by Type  
-![Filter Tasks](./screenshots/8tasksByType.png)
-
-
-
-### 📊 Display Task Averages  
-![Task Averages](./screenshots/9displayAverages.png)
-
-
-
-### 📂 Load from File with Error Handling  
-![Load Projects](./screenshots/10testLoad.png)
-
-
-### 💾 Save to File  
-![Save Projects](./screenshots/11testSave.png)
-
-
-
-### 👋 Exit Program  
-![Exit](./screenshots/12exit.png)
+<table>
+  <tr>
+    <td align="center"><img src="./screenshots/0menu.png" width="48%"/><br/>🧭 Main Menu</td>
+    <td align="center"><img src="./screenshots/1createProject.png" width="48%"/><br/>🆕 Create Project</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./screenshots/2removeProject.png" width="48%"/><br/>❌ Remove Project</td>
+    <td align="center"><img src="./screenshots/3addTask.png" width="48%"/><br/>➕ Add Task</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./screenshots/4markComplete.png" width="48%"/><br/>✅ Mark Completed</td>
+    <td align="center"><img src="./screenshots/5removeTask.png" width="48%"/><br/>🗑️ Remove Task</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./screenshots/6displayAllProjects.png" width="48%"/><br/>📋 Display Projects</td>
+    <td align="center"><img src="./screenshots/7completedTasks.png" width="48%"/><br/>📌 Completed Tasks</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./screenshots/8tasksByType.png" width="48%"/><br/>🔍 Filter Tasks</td>
+    <td align="center"><img src="./screenshots/9displayAverages.png" width="48%"/><br/>📊 Task Averages</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./screenshots/10testLoad.png" width="48%"/><br/>📂 Load with Errors</td>
+    <td align="center"><img src="./screenshots/11testSave.png" width="48%"/><br/>💾 Save to File</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./screenshots/12exit.png" width="48%"/><br/>👋 Exit Program</td>
+    <td></td>
+  </tr>
+</table>
 
 ## 4. Inheritance Discussion
 
