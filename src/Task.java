@@ -41,7 +41,7 @@ public class Task {
 
     /**
      * Sets the task ID.
-     * @param taskId int (must be between 1-9)
+     * @param taskId int (must be between 1-99)
      */
     public void setTaskId(int taskId) {
         this.taskId = taskId;
