@@ -26,10 +26,10 @@ Progress below is tracked by menu option:
 - [x] `.gitignore` blocks `.class` files and build artifacts
 
 ## Project & Task Management
-- [ ] `Project[]` stores up to 10 projects
-- [ ] Each `Project` stores tasks in a `Task[]`, size depends on type (Small, Medium, Large)
-- [ ] Prevent duplicate IDs for projects and tasks
-- [ ] Auto-generate random unique ID if duplicate is entered
+- [x] `Project[]` stores up to 10 projects
+- [x] Each `Project` stores tasks in a `Task[]`, size depends on type (Small, Medium, Large)
+- [x] Prevent duplicate IDs for projects and tasks
+- [x] Auto-generate random unique ID if duplicate is entered
 
 ## Helper Methods & Refactoring
 - [x] Refactored long blocks of code into clear helper methods
@@ -37,20 +37,21 @@ Progress below is tracked by menu option:
 - [x] Avoided deeply nested code, used early returns and clean loops
 
 ## File I/O
-- [ ] Implemented `loadFromFile(String filename)` using `Scanner`
-- [ ] Implemented `saveToFile(String filename)` using `PrintWriter`
-- [ ] Follows exact format given in `ProjectData.txt`
-- [ ] All file reading/writing wrapped in exception handling
+- [x] Implemented `loadFromFile(String filename)` using `Scanner`
+- [x] Implemented `saveToFile(String filename)` using `PrintWriter`
+- [x] Follows exact format given in `ProjectData.txt`
+- [x] Fixed the `ProjectData.txt` error where it doesn't get description
+- [x] All file reading/writing wrapped in exception handling
 
 ## Exception Handling
-- [ ] Wrapped `Scanner.nextInt()` and similar calls in `try-catch`
-- [ ] Handled `InputMismatchException`, `NumberFormatException`, `FileNotFoundException`
-- [ ] All errors produce meaningful output without crashing the program
+- [x] Wrapped `Scanner.nextInt()` and similar calls in `try-catch`
+- [x] Handled `InputMismatchException`, `NumberFormatException`, `FileNotFoundException`
+- [x] All errors produce meaningful output without crashing the program
 
 ## Display & Filtering
-- [ ] Menu options display task summaries, completed tasks, and project info
-- [ ] Filter tasks by type (Admin, Lab, Study)
-- [ ] Gracefully handle empty lists, null slots, or invalid filters
+- [x]  Menu options display task summaries, completed tasks, and project info
+- [x] Filter tasks by type (Admin, Lab, Study)
+- [x] Gracefully handle empty lists, null slots, or invalid filters
 
 ## Report
 - [ ] Compared Assignment 1 vs Assignment 2 code structure
@@ -59,10 +60,10 @@ Progress below is tracked by menu option:
 - [ ] Report written without AI assistance (as per assignment rules)
 
 ## Testing
-- [ ] Validated task limits per project type (1, 2, or 3)
-- [ ] Verified duplicate ID logic with fallback random generation
-- [ ] Tested file load/save with provided `ProjectData.txt`
-- [ ] Checked for all expected error messages and recovery flows
+- [x] Validated task limits per project type (1, 2, or 3)
+- [x] Verified duplicate ID logic with fallback random generation
+- [x] Tested file load/save with provided `ProjectData.txt`
+- [x] Checked for all expected error messages and recovery flows
 
 
 ## Assignment 2 Specifications
@@ -95,13 +96,13 @@ Progress below is tracked by menu option:
 - [x] Supports **up to 10 projects** in the `projects` array.
 - [x] Displays an **error if trying to create a project when full**.
 - [x] Ensures **unique `projectId`** across all projects.
-- [ ] If a **duplicate `projectId`** is entered, a **random unique ID** is assigned automatically.
+- [x] If a **duplicate `projectId`** is entered, a **random unique ID** is assigned automatically.
 - [x] Accepts and normalises **case-insensitive `projectType`** input (Small, Medium, Large).
 
 ### Task Management
 - [x] Adds tasks to a specific project's **`tasks` array**.
 - [x] Ensures **unique `taskId` within the project**.
-- [ ] If a **duplicate `taskId`** is entered, a **random unique ID** is assigned automatically.
+- [x] If a **duplicate `taskId`** is entered, a **random unique ID** is assigned automatically.
 - [x] Accepts and normalises **case-insensitive `taskType`** input (A, S, L).
 - [x] Prevents adding tasks **if the project is at max capacity** (based on type).
 
