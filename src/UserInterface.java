@@ -135,7 +135,12 @@ public class UserInterface {
         Project p = new Project();
 
         // Get validated project ID
-        int id = promptValidProjectId(scannerInput);
+        int id = promptValidProjectId(scannerInput, true);
+
+        if (id == -1) {
+            System.out.println("Project creation cancelled.");
+            return;
+        }
 
         // Check for duplicate ID and generate new one if necessary
         while (isProjectIdTaken(id)) {
@@ -144,10 +149,6 @@ public class UserInterface {
             System.out.println("[DEBUG] Generated unique fallback Project ID: " + id);
             
         }
-        // if (isProjectIdTaken(id)) {
-        //     System.out.println("Project ID already exists. Generating a new unique ID...");
-        //     id = generateUniqueProjectId(); 
-        // }
 
         p.setProjectId(id);
         System.out.println("\nAssigned Project ID: " + p.getProjectId());
@@ -215,18 +216,19 @@ public class UserInterface {
             return;
         }
         
+        // Display all existing project
         displayExistingProjects();
 
         while (true) {
-            // Prompt for the ID of the project to remove
-            int projectIdToRemove = promptExistingProjectId(scannerInput);
+            // Prompt for valid ID (allows -1 to cancel)
+            int projectIdToRemove = promptValidProjectId(scannerInput, true);
 
             if (projectIdToRemove == -1) {
                 System.out.println("Removal cancelled.");
                 return;
             }
 
-                    // Try to find and remove the project
+            // Try to find and remove the project
             for (int i = 0; i < projects.length; i++) {
                 if (projects[i] != null && projects[i].getProjectId() == projectIdToRemove) {
                     projects[i] = null;
@@ -284,10 +286,6 @@ public class UserInterface {
             System.out.println("Task ID " + " already exists in this project. Generating a new unique ID...");
             taskId = generateUniqueTaskId(workProject);
         }
-        // if (isTaskIdTakenInProject(workProject, taskId)) {
-        //     System.out.println("Task ID already exists in this project. Generating a new unique ID...");
-        //     taskId = generateUniqueTaskId(workProject);
-        // }
 
         // Task description input
         String description;
@@ -798,12 +796,12 @@ private boolean hasAvailableProjectSlot() {
  * @param scannerInput The Scanner object used to read user input.
  * @return A validated and unique project ID.
  */
-private int promptValidProjectId(Scanner scannerInput) {
+private int promptValidProjectId(Scanner scannerInput, boolean allowCancel) {
     int id = 0;
     boolean validProjectId = false;
     
     do {
-        System.out.print("\nEnter Project ID (1-999): ");
+        System.out.print("\nEnter Project ID (1-999) or -1 to cancel: ");
         String input = scannerInput.nextLine().trim();
 
         if (input.isEmpty()) {
@@ -814,6 +812,10 @@ private int promptValidProjectId(Scanner scannerInput) {
         try {
             id = Integer.parseInt(input);
 
+            if (allowCancel && id == -1) {
+                return -1;
+            }
+
             if (id >= 1 && id <= 999) {
                 validProjectId = true;
             } else {
@@ -822,21 +824,6 @@ private int promptValidProjectId(Scanner scannerInput) {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a number between 1 and 999.");
         }
-        // if (scannerInput.hasNextInt()) {
-        //     id = scannerInput.nextInt();
-        //     scannerInput.nextLine(); // clear newline
-
-        //     if (id >= 1 && id <= 999) {
-        //         validProjectId = true;
-        //     } else {
-        //         System.out.println("Project ID must be a number between 1 and 999.");
-        //         scannerInput.next(); // clear invalid token
-        //     }
-
-        // } else {
-        //     System.out.println("Invalid input. Please enter a number between 1 and 999.");
-        //     scannerInput.nextLine(); // clear invalid token
-        // }
         
     } while (!validProjectId);
     
