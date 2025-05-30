@@ -1,0 +1,25 @@
+This is a garbage line...
+9999,Project That Won't Fit,ExtraLarge
+102,Valid Project,Medium
+101,Set up workspace,A,5,true
+Oops,this,is,not,right
+145,Write code,S,-3,false
+112,X,L,5000,true
+112,Too many tasks,L,3,true
+102,BadTypeTask,Z,4,false
+102,BadCompletionType,S,8,banana
+, , ,
+Just one big line of sadness
+
+103,Another Project,Small
+200,Install dependencies,A,2,true
+200,Install dependencies again,A,2,true
+201,Finalise docs,L,100,false
+
+202,Weird Name Project,4
+203,Confused Project,true
+
+110,Yet Another,Medium
+901,Launch build,A,10,true
+902,Invalid type task,B,20,false
+903,Invalid duration task,L,abc,false

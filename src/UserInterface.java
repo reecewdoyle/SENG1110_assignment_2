@@ -663,22 +663,36 @@ private void loadFromFile() {
             try {
                 if (tokens.length == 3) {
                     // Project line: ID, Name, Type
-                    if (projectIndex >= 9) {
-                        System.out.println("[WARNING] Max project limit reached. Skipping extra project: " + line);
+                    // if (projectIndex >= 9) {
+                    //     System.out.println("[WARNING] Max project limit reached. Skipping extra project: " + line);
+                    //     continue;
+                    // }
+
+                    int projectId = Integer.parseInt(tokens[0].trim());
+                    if (projectId < 1 || projectId > 999) {
+                        System.out.println("[WARNING] Invalid project ID: " + projectId + ". Skipping line: " + line);
                         continue;
                     }
 
-                    int projectId = Integer.parseInt(tokens[0].trim());
                     String name = tokens[1].trim();
                     String type = tokens[2].trim();
+
+                    if (++projectIndex >= 10) {
+                        System.out.println("[WARNING] Max project limit reached. Skipping extra project: " + line);
+                    }
+
+                    if (!type.equals("Small") && !type.equals("Medium") && !type.equals("Large")) {
+                        System.out.println("[WARNING] Invalid project type: " + type + ". Skipping line: " + line);
+                        continue;
+                    }
 
                     currentProject = new Project();
                     currentProject.setProjectId(projectId);
                     currentProject.setProjectName(name);
                     currentProject.setProjectType(type);
-                    loadedProjects[++projectIndex] = currentProject;
+                    loadedProjects[projectIndex] = currentProject;
 
-                } else if (tokens.length == 4 && currentProject != null) {
+                } else if (tokens.length == 5 && currentProject != null) {
                     // Task line: ID, Type, Duration, Completed
                     if (!projectHasRoomForTask(currentProject)) {
                         System.out.println("[WARNING] Project ID " + currentProject.getProjectId() + " full. Skipping task: " + line);
@@ -686,16 +700,37 @@ private void loadFromFile() {
                     }
 
                     int taskId = Integer.parseInt(tokens[0].trim());
-                    char taskType = tokens[1].trim().toUpperCase().charAt(0);
-                    int duration = Integer.parseInt(tokens[2].trim());
-                    boolean completed = Boolean.parseBoolean(tokens[3].trim().toLowerCase());
+                    String description = tokens[1].trim();
+                    char taskType = tokens[2].trim().toUpperCase().charAt(0);
+                    int duration = Integer.parseInt(tokens[3].trim());
+                    boolean completed = Boolean.parseBoolean(tokens[4].trim().toLowerCase());
+                    
+                    if (description.isEmpty()) {
+                        System.out.println("[WARNING] Task description is empty: Skipping line: " +line);
+                        continue;
+                    }
 
                     if (taskType != 'A' && taskType != 'S' && taskType != 'L') {
                         System.out.println("[WARNING] Invalid task type: " + taskType + ". Skipping: " + line);
                         continue;
                     }
 
-                    Task task = new Task(taskId, "", taskType, duration, completed);
+                    if (duration <= 0 || duration > 100) {
+                        System.out.println("[WARNING] Invalid task duration : " + duration + ". Skipping: " + line);
+                        continue;
+                    }
+
+                    if (!projectHasRoomForTask(currentProject)) {
+                        System.out.println("[WARNING] Project ID " + currentProject.getProjectId() + " full. Skipping task: " +line);
+                        continue;
+                    }
+
+                    Task task = new Task();
+                    task.setTaskId(taskId);
+                    task.setDescription(description);
+                    task.setTaskType(taskType);
+                    task.setTaskDuration(duration);
+                    task.setCompleted(completed);
 
                     for (int i = 0; i < currentProject.getTasks().length; i++) {
                         if (currentProject.getTasks()[i] == null) {
