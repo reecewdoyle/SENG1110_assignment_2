@@ -146,7 +146,6 @@ public class UserInterface {
         while (isProjectIdTaken(id)) {
             System.out.println("Project ID " + " already exists. Generating a new unique ID...");
             id = generateUniqueProjectId();
-            System.out.println("[DEBUG] Generated unique fallback Project ID: " + id);
             
         }
 
@@ -270,8 +269,8 @@ public class UserInterface {
         System.out.println("Selected Project: " + workProject.getProjectName());
 
         // Display how many tasks this project can have
-        displayTaskLimitByProjectType(workProject.getProjectType());
         System.out.println("Project Type: " + workProject.getProjectType());
+        displayTaskLimitByProjectType(workProject.getProjectType());
 
         // Check to see if there's room to add a task
         if (!projectHasRoomForTask(workProject)) {
@@ -279,14 +278,16 @@ public class UserInterface {
             return;
         }
 
+        // Get intial task ID from user
         int taskId = promptValidTaskId(scannerInput);
 
         // Check if the ID is already taken within the selected project
-        while (isTaskIdTakenInProject(workProject, taskId)) {
-            System.out.println("Task ID " + " already exists in this project. Generating a new unique ID...");
+        if (isTaskIdTakenInProject(workProject, taskId)) {
+            System.out.println("Task ID " + taskId + " already exists in this project. Generating a new unique ID...");
             taskId = generateUniqueTaskId(workProject);
+            System.out.println("Assigned new unique Task ID: " + taskId);
         }
-
+           
         // Task description input
         String description;
         do {
@@ -329,21 +330,44 @@ public class UserInterface {
         boolean validDuration = false;
 
         do {
-            System.out.print("\nEnter task duration in hours (positive whole number): ");
-            if (scannerInput.hasNextInt()) {
-                duration = scannerInput.nextInt();
-                scannerInput.nextInt();
+            System.out.print("Enter Task Duration (1-100 hours): ");
+            String input = scannerInput.nextLine().trim();
 
-                if (duration > 0) {
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty. Please enter a number between 1 and 100.");
+                continue;
+            }
+
+            try {
+                duration = Integer.parseInt(input);
+
+                if (duration >=1 && duration <= 100) {
                     validDuration = true;
                 } else {
-                    System.out.println("Duration must be greater than 0.");
+                    System.out.println(("Duration must be between 1 and 100."));
                 }
-            } else {
-                System.out.println("Invalid input. Please enter the number of hours.");
-                scannerInput.next();
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a whole number between 1 and 100.");
             }
+
         } while (!validDuration);
+
+        // do {
+        //     System.out.print("\nEnter task duration in hours (positive whole number): ");
+        //     if (scannerInput.hasNextInt()) {
+        //         duration = scannerInput.nextInt();
+        //         scannerInput.nextInt();
+
+        //         if (duration > 0) {
+        //             validDuration = true;
+        //         } else {
+        //             System.out.println("Duration must be greater than 0.");
+        //         }
+        //     } else {
+        //         System.out.println("Invalid input. Please enter the number of hours.");
+        //         scannerInput.next();
+        //     }
+        // } while (!validDuration);
 
         // Create and assign task
         Task newTask = new Task();
@@ -966,7 +990,7 @@ private int promptValidTaskId(Scanner scannerInput) {
     boolean validInput = false;
 
     do {
-        System.out.print("\nEnter Task ID (1-9): ");
+        System.out.print("\nEnter Task ID (1-99): ");
         if (scannerInput.hasNextLine()) {
             String input = scannerInput.nextLine().trim();
 
@@ -977,13 +1001,13 @@ private int promptValidTaskId(Scanner scannerInput) {
 
             try {
                 taskId = Integer.parseInt(input);
-                if (taskId >= 1 && taskId <= 9) {
+                if (taskId >= 1 && taskId <= 99) {
                     validInput = true;
                 } else {
-                    System.out.println("Task ID must be between 1 and 9.");
+                    System.out.println("Task ID must be between 1 and 99.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number between 1 and 9.");
+                System.out.println("Invalid input. Please enter a number between 1 and 99.");
             }
         }
     } while (!validInput);
@@ -1234,8 +1258,6 @@ private int generateUniqueProjectId() {
         id = rand.nextInt(999) + 1; // generates number between 1 and 999
     } while (isProjectIdTaken(id));
 
-    System.out.println("[DEBUG] Generated unique fallback Project ID: " + id);
-
     return id;
 }
 
@@ -1259,7 +1281,7 @@ private boolean isProjectIdTaken(int id) {
 // -------------------------------------------------------------------------
 
 /**
- * Generates a random unique task ID between 1 and 9 that is not already
+ * Generates a random unique task ID between 1 and 99 that is not already
  * used by any existing task in the given project.
  *
  * @param project The project to generate a unique task ID for.
@@ -1268,11 +1290,11 @@ private boolean isProjectIdTaken(int id) {
 private int generateUniqueTaskId(Project project) {
     Random rand = new Random();
     int id;
-
+    
     do {
-        id = rand.nextInt(9) + 1; // generates number between 1 and 9
+        id = rand.nextInt(99) + 1; // generates number between 1 and 99
     } while (isTaskIdTakenInProject(project, id));
-
+    
     return id;
 }
 
